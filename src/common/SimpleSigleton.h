@@ -13,7 +13,6 @@
 #include <utility>
 #include <cstdlib>
 #include <new>
-//模板判断是否用有
 #define DEFINE_TYPE_TRAIT(name, func)                     \
   template <typename T>                                   \
   struct name {                                           \
@@ -75,6 +74,7 @@ typename std::enable_if<!HasShutdown<T>::value>::type CallShutdown(
  private:                                                                 \
   classname();                                                            \
   DISALLOW_COPY_AND_ASSIGN(classname)
+
 
 
 

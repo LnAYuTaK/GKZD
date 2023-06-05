@@ -10,15 +10,17 @@
  * 
  */
 #include "App.h"
-
+#include "NetWorkManager.h"
+#include "SerialManager.h"
+#include <memory>
 /***********************************************************/
 Application  *Application::_app = nullptr; 
 Application::Application(/* args */)
- :_serial(nullptr)
 {
    //注意顺序
-   _app    = this;
-   _serial = new CSerialPort();
+   _app      =  this;
+   serialMgr =  new SerialManager();
+   netMgr    =  new NetWorkManager();
 }
 /***********************************************************/
 Application* app(void)
@@ -28,38 +30,22 @@ Application* app(void)
 /***********************************************************/
 Application::~Application()
 {
-   _app =nullptr;
+   delete serialMgr;
+   delete netMgr;
+   serialMgr = nullptr;
+   netMgr    = nullptr;
+   _app      = nullptr;
 }
 /***********************************************************/
 void Application::Init(/* args */)
 {
-   // //Serial Init初始化
-   // _serial->init(UART2,
-   //              itas109::BaudRate115200, // baudrate
-   //              itas109::ParityNone,     // parity
-   //              itas109::DataBits8,      // data bit
-   //              itas109::StopOne,        // stop bit
-   //              itas109::FlowNone,       // flow
-   //              4096  
-   // );
-   // _serial->setReadIntervalTimeout(0); 
-   // //Link Mavlink Control 交付给SerialHandle类处理
-   // _serial->connectReadEvent(_mavlinkhandle);
+
+   CLOG_INFO("%s","Init App");
 }
 /***********************************************************/
 void Application::Start()
 {
-   // //开启mavlink 串口接收线程 检测串口数据执行操作
-   // _serial->open();
-   // if(!(_serial->isOpen()))
-   // {
-   //    LOG_ERROR("%s","Serial OPEN ERROR");
-   //    return;
-   // }
-   // else
-   // {
-   //    LOG_INFO("%s [%s]","OPEN SERIAL OK",_serial->getPortName());
-   // }
+   CLOG_INFO("%s","Start App");
 }
 /***********************************************************/
 

@@ -6,13 +6,11 @@
 #include <math.h>
 #include <sys/types.h>
 #include <dirent.h>
-
 #include "CLOG.h"
-
-#include "SerialPort.h"
-#include "SerialPortInfo.h"
-class CLOG;
-using namespace itas109;
+#include "NetWorkManager.h"
+#include "SerialManager.h"
+class SerialManager;
+class NetWorkManager;
 class Application
 {
 public:
@@ -22,11 +20,9 @@ public:
     void Init();
     void Start();
     static Application* _app;
-    CLOG  *         LOG()           {return CLOG::Instance();}
-    CSerialPort *   Serial()        {return this->_serial;} 
 private:
-
-    CSerialPort * _serial;
+   SerialManager * serialMgr;
+   NetWorkManager * netMgr;
 };
 Application * app();
 

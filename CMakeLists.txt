@@ -11,9 +11,9 @@ if(ARM_CROSS_COMPILE)
     MESSAGE(STATUS "Arm cross compiling...")
     # 设置目标系统
     set(CMAKE_SYSTEM_NAME Linux)
-    set(CMAKE_SYSTEM_PROCESSOR arm)
+    # set(CMAKE_SYSTEM_PROCESSOR arm)
     # 设置工具链目录
-    set(TOOL_CHAIN_DIR /opt/hisi-linux/x86-arm/arm-himix100-linux)
+    set(TOOL_CHAIN_DIR /usr/aarch64-linux-gnu)
     set(TOOL_CHAIN_INCLUDE 
         ${TOOL_CHAIN_DIR}/include
     )
@@ -21,8 +21,8 @@ if(ARM_CROSS_COMPILE)
         ${TOOL_CHAIN_DIR}/lib
     )
     # 设置编译器
-    set(CMAKE_C_COMPILER "arm-himix100-linux-gcc")
-    set(CMAKE_CXX_COMPILER "arm-himix100-linux-g++")
+    set(CMAKE_C_COMPILER "aarch64-linux-gnu-gcc")
+    set(CMAKE_CXX_COMPILER "aarch64-linux-gnu-g++")
 
     MESSAGE(STATUS "CMAKE_C_COMPILER:" ${CMAKE_C_COMPILER})
     MESSAGE(STATUS "CMAKE_CXX_COMPILER:" ${CMAKE_CXX_COMPILER})
@@ -55,7 +55,7 @@ include_directories(src/driver)
 include_directories(src/app)
 #第三方库
 include_directories(src/thirdparty/CSerialPort)
-
+include_directories(src/thirdparty/HP-Socket)
 #输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
@@ -70,7 +70,6 @@ add_definitions(-std=c++17)
 
 #添加源文件路径
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/app SRC_LIST)
-
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/driver SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/common SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/log SRC_LIST)
@@ -82,4 +81,5 @@ add_executable(demo  ${SRC_LIST})
 
 #添加编译时的依赖库
 target_link_libraries(${PROJECT_NAME}  -lpthread -lrt -ldl -lm )
-target_link_libraries(${PROJECT_NAME}  libcserialport.a)
+target_link_libraries(${PROJECT_NAME}  libcserialport.so)
+target_link_libraries(${PROJECT_NAME}  libhpsocket.so libhpsocket_d.so)

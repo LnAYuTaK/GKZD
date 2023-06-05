@@ -1,3 +1,0 @@
-/home/liukuan/WorkSpace/GKZD/Project/build/CMakeFiles/rebuild_cache.dir
-/home/liukuan/WorkSpace/GKZD/Project/build/CMakeFiles/demo.dir
-/home/liukuan/WorkSpace/GKZD/Project/build/CMakeFiles/edit_cache.dir

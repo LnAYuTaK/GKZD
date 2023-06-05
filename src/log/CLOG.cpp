@@ -16,6 +16,7 @@ CLOG::CLOG()
     , _MxLogBufferSize(256)
     , _LOGLevel(CLOG_LEVEL_INFO)
 {
+  
 }
 /***********************************************************/
 CLOG::~CLOG()
