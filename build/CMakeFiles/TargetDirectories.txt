@@ -1,0 +1,3 @@
+/home/forlinx/WorkSpace/GKZD/build/CMakeFiles/rebuild_cache.dir
+/home/forlinx/WorkSpace/GKZD/build/CMakeFiles/demo.dir
+/home/forlinx/WorkSpace/GKZD/build/CMakeFiles/edit_cache.dir

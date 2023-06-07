@@ -13,14 +13,20 @@
 #include "NetWorkManager.h"
 #include "SerialManager.h"
 #include <memory>
+
+#define  MAX_THREAD_NUM 4
 /***********************************************************/
 Application  *Application::_app = nullptr; 
 Application::Application(/* args */)
+   :_threadPool(nullptr)
+   ,_serialMgr(nullptr)
+   ,_netMgr(nullptr)
 {
    //注意顺序
-   _app      =  this;
-   serialMgr =  new SerialManager();
-   netMgr    =  new NetWorkManager();
+   _app        =  this;
+   //_threadPool =  new ThreadPool(MAX_THREAD_NUM);
+   //_serialMgr  =  new SerialManager();
+   _netMgr     =  new NetWorkManager();
 }
 /***********************************************************/
 Application* app(void)
@@ -30,16 +36,19 @@ Application* app(void)
 /***********************************************************/
 Application::~Application()
 {
-   delete serialMgr;
-   delete netMgr;
-   serialMgr = nullptr;
-   netMgr    = nullptr;
-   _app      = nullptr;
+   // _threadPool->shutdown();
+   // delete _serialMgr;
+   // delete _netMgr;
+   // delete _threadPool;
+   
+   // _threadPool = nullptr;
+   // _serialMgr  = nullptr;
+   // _netMgr     = nullptr;
+   // _app        = nullptr;
 }
 /***********************************************************/
 void Application::Init(/* args */)
 {
-
    CLOG_INFO("%s","Init App");
 }
 /***********************************************************/

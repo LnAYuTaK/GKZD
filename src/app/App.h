@@ -9,6 +9,7 @@
 #include "CLOG.h"
 #include "NetWorkManager.h"
 #include "SerialManager.h"
+#include "ThreadPool.h"
 class SerialManager;
 class NetWorkManager;
 class Application
@@ -20,9 +21,14 @@ public:
     void Init();
     void Start();
     static Application* _app;
+
+    NetWorkManager * newMgr     (){return this->_netMgr;}
+    SerialManager *  serialMgr  (){return this->_serialMgr;}
+    ThreadPool *     threadPool (){return this->_threadPool;}
 private:
-   SerialManager * serialMgr;
-   NetWorkManager * netMgr;
+   ThreadPool     *  _threadPool;
+   SerialManager  *  _serialMgr;
+   NetWorkManager *  _netMgr;
 };
 Application * app();
 

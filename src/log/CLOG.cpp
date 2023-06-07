@@ -23,11 +23,6 @@ CLOG::~CLOG()
 {
 }
 /***********************************************************/
-// void CLOG::SetLevel(CLOG_LEVEL nLevel)
-// {
-//   _LOGLevel = nLevel;
-// }
-/***********************************************************/
 char *CLOG::GetCurrentTime()
 {
   time_t t = time(nullptr);
@@ -35,7 +30,6 @@ char *CLOG::GetCurrentTime()
   strftime(_timebuf, sizeof(_timebuf),
            "%Y.%m.%d-%H:%M:%S",
            now);
-  std::cout << _timebuf << std::endl;
   now = nullptr;
   return _timebuf;
 }

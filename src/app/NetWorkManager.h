@@ -1,20 +1,23 @@
 #pragma once 
 #include "HPSocket.h"
 #include "SocketInterface.h"
-class CListenerImpl : public CUdpClientListener
+class TCPListenerImpl :public  CTcpPullServerListener
 {
 public:
-	virtual EnHandleResult OnPrepareConnect(IUdpClient* pSender, CONNID dwConnID, SOCKET socket)override;
 
-	virtual EnHandleResult OnConnect(IUdpClient* pSender, CONNID dwConnID) override;
+	virtual EnHandleResult OnPrepareListen(ITcpServer* pSender, SOCKET soListen);
+	virtual EnHandleResult OnAccept(ITcpServer* pSender, CONNID dwConnID, UINT_PTR soClient);
+	virtual EnHandleResult OnHandShake(ITcpServer* pSender, CONNID dwConnID);
+	virtual EnHandleResult OnReceive(ITcpServer* pSender, CONNID dwConnID, int iLength);
+	virtual EnHandleResult OnSend(ITcpServer* pSender, CONNID dwConnID, const BYTE* pData, int iLength);
+	virtual EnHandleResult OnClose(ITcpServer* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode);
+	virtual EnHandleResult OnShutdown(ITcpServer* pSender);
+};
 
-	virtual EnHandleResult OnHandShake(IUdpClient* pSender, CONNID dwConnID) override;
-
-	virtual EnHandleResult OnReceive(IUdpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength)override;
-
-	virtual EnHandleResult OnSend(IUdpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength)override ;
-
-	virtual EnHandleResult OnClose(IUdpClient* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode)override;
+enum NetWorkType{ 
+	 UDP,
+	 TCP,
+	 MQTT
 };
 
 class NetWorkManager
@@ -24,10 +27,10 @@ private:
 public:
 	NetWorkManager(/* args */);
 	~NetWorkManager();
+	ITcpPullServer  *Server() {return this->server.Get();}	
 private:
-	CListenerImpl *listener;
-    //IUdpClient* HP_Create_UdpClient(IUdpClientListener* pListener);
-    IUdpClient    *client;
+    TCPListenerImpl  listener;
+	CTcpPullServerPtr server;
 };
 
 
