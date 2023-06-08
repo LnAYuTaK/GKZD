@@ -40,7 +40,8 @@ sudo apt-get install doxygen graphviz
 ```console
 $ cd HP-Socket/Linux/script
 $ sudo chmod 777 *.sh
-$ ./compile.sh aarch64-linux-gnu-g++ -p arm64
+//注意 要注释掉/include/hpsocket/GlobalDef.h   70行的typedef LLONG  __time64_t;
+$ ./compile.sh -c aarch64-linux-g++ -p arm64
 
 //编译生成的文件在 HP-Socket/Linux/lib/hpsocket/arm64/ 
 将libhpsocket.so   libhpsocket.so.5  libhpsocket.so.5.9.1 复制到
@@ -67,7 +68,8 @@ $ make
 $ make  install
 //编译生成的文件在 /openssl_aarch64
 ```
-```
+
+```console
 mqttc交叉编译
 $ 修改创建 toolchain.linux-aarch64.cmake 模仿同文件夹下arm11 就可以
 $ mkdir arm_build && cd arm_build
@@ -79,7 +81,8 @@ $ cmake  ..  -DPAHO_WITH_SSL=TRUE -DPAHO_BUILD_SAMPLES=TRUE \
 $ make && make install  生成的文件在 arm_build/install 下面
 将 arm_build/install/lib 下libpaho-mqtt3as.so.1 libpaho-mqtt3as.so libpaho-mqtt3as.so.1.3.12复制到 /GKZD/lib 文件夹下
 ```
-```
+
+```console
 mqttcpp交叉编译
 $ mkdir arm_build && cd arm_build
 $  cmake .. \
