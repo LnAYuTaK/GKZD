@@ -10,6 +10,9 @@
 #include "NetWorkManager.h"
 #include "SerialManager.h"
 #include "ThreadPool.h"
+#include <iostream>
+#include <string>
+
 class SerialManager;
 class NetWorkManager;
 class Application
@@ -30,6 +33,11 @@ private:
    SerialManager  *  _serialMgr;
    NetWorkManager *  _netMgr;
 };
+
+
+
+
+
 Application * app();
 
 

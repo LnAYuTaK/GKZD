@@ -30,6 +30,7 @@ CSerialPort是一个基于C/C++的轻量级开源跨平台串口类库，可以�
 接口全部使用回调函数
 + 底层网络采用[HP-Socket](https://github.com/ldcsaa/HP-Socket)网络处理
 HPSocket 是一个小型高性能网络处理框架底层采用epoll作为异步模型可以自动拆包解包处理
++ 
 #### 交叉编译第三方库
 ##### CSerialPort
 ```console
@@ -137,6 +138,10 @@ private:
     CSerialPort * s_port3;
     /* data */
 };
+```
+### MQTT模块 
+```
+
 ```
 
 

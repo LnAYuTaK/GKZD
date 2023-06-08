@@ -64,3 +64,16 @@ inline void RemovePkgInfo(T* pSender, CONNID dwConnID)
 	assert(pInfo != nullptr);
 	DestructPkgInfo(pInfo);
 }
+
+CBufferPtr* GeneratePkgBuffer(const TPkgHeader& header, const TPkgBody& body)
+{
+	int header_len	= sizeof(TPkgHeader);
+	int body_len	= header.body_len;
+
+	CBufferPtr* pBuffer = new CBufferPtr(header_len + body_len);
+
+	memcpy(pBuffer->Ptr(), (BYTE*)&header, header_len);
+	memcpy(pBuffer->Ptr() + header_len, (BYTE*)&body, body_len);
+
+	return pBuffer;
+}

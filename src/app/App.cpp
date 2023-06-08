@@ -13,6 +13,14 @@
 #include "NetWorkManager.h"
 #include "SerialManager.h"
 #include <memory>
+#include "mqttClientCloud.h"
+#include <thread>
+#include <chrono>
+
+void on_cloud_message(const std::string& data)
+{
+    std::cout<<"received data is: "<<data<<std::endl;
+}
 
 #define  MAX_THREAD_NUM 4
 /***********************************************************/
@@ -55,6 +63,15 @@ void Application::Init(/* args */)
 void Application::Start()
 {
    CLOG_INFO("%s","Start App");
+   cloud::mqtt_client g_client;                         //定义一个mqtt客户端
+   std::cout << "[CLOUD] listen starting"<<std::endl;
+   g_client.set_message_handler(on_cloud_message);      //开启mqtt clinet监听消息，消息处理函数为on_cloud_message
+   while(1)
+   {
+      std::cout << "运行中..."<<std::endl;
+      std::this_thread::sleep_for(std::chrono::seconds(10));
+      g_client.send("online...");  // 确保与mqtt broker server建立连接之后再publish!!!
+   }
 }
 /***********************************************************/
 

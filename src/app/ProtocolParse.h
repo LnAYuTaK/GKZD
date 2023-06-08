@@ -20,7 +20,4 @@ private:
     /* data */
 };
 
-
-void dealuart(char *data ,int length);
-
 ProtocolParse * Protocol();

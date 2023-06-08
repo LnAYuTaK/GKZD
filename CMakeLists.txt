@@ -56,6 +56,7 @@ include_directories(src/app)
 #第三方库
 include_directories(src/thirdparty/CSerialPort)
 include_directories(src/thirdparty/HP-Socket)
+include_directories(src/thirdparty/MQTT)
 #输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
@@ -82,4 +83,7 @@ add_executable(demo  ${SRC_LIST})
 #添加编译时的依赖库
 target_link_libraries(${PROJECT_NAME}  -lpthread -lrt -ldl -lm )
 target_link_libraries(${PROJECT_NAME}  libcserialport.so)
-target_link_libraries(${PROJECT_NAME}  libhpsocket.so libhpsocket_d.so)
+target_link_libraries(${PROJECT_NAME}  libhpsocket.so )
+target_link_libraries(${PROJECT_NAME}  libpaho-mqtt3a.so)
+target_link_libraries(${PROJECT_NAME}  libpaho-mqttpp3.so)
+

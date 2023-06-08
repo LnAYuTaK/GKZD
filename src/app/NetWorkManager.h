@@ -22,8 +22,6 @@ enum NetWorkType{
 
 class NetWorkManager
 {
-private:
-	/* data */
 public:
 	NetWorkManager(/* args */);
 	~NetWorkManager();
