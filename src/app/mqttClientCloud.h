@@ -1,6 +1,4 @@
-#ifndef __MQTT_CLIENT_TO_CLOUD_HPP__
-#define __MQTT_CLIENT_TO_CLOUD_HPP__
-
+#pragma once
 #include "mqtt/async_client.h"  // mqtt库头文件
 #include "mqtt/topic.h"         // mqtt库头文件
 
@@ -28,4 +26,4 @@ namespace cloud {
     };
 }  // namespace cloud
 
-#endif
+

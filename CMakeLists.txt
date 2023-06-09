@@ -6,47 +6,24 @@ project(demo)
 MESSAGE(STATUS "PROJECT")
 
 #设置交叉编译器
-option(ARM_CROSS_COMPILE "Arm cross compiling option" ON)
-if(ARM_CROSS_COMPILE)
-    MESSAGE(STATUS "Arm cross compiling...")
-    # 设置目标系统
-    set(CMAKE_SYSTEM_NAME Linux)
-    # set(CMAKE_SYSTEM_PROCESSOR arm)
-    # 设置工具链目录
-    set(TOOL_CHAIN_DIR /usr/aarch64-linux-gnu)
-    set(TOOL_CHAIN_INCLUDE 
-        ${TOOL_CHAIN_DIR}/include
-    )
-    set(TOOL_CHAIN_LIB 
-        ${TOOL_CHAIN_DIR}/lib
-    )
-    # 设置编译器
-    set(CMAKE_C_COMPILER "aarch64-linux-gnu-gcc")
-    set(CMAKE_CXX_COMPILER "aarch64-linux-gnu-g++")
+# 交叉编译的系统名称
+set(CMAKE_SYSTEM_NAME Linux)
+# 交叉编译的CPU架构
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
 
-    MESSAGE(STATUS "CMAKE_C_COMPILER:" ${CMAKE_C_COMPILER})
-    MESSAGE(STATUS "CMAKE_CXX_COMPILER:" ${CMAKE_CXX_COMPILER})
-    # 设置Cmake查找主路径
-    set(CMAKE_FIND_ROOT_PATH ${TOOL_CHAIN_DIR})
+#指明C和C++编译器
+set(CMAKE_C_COMPILER aarch64-linux-gcc)
+set(CMAKE_CXX_COMPILER aarch64-linux-g++)
 
-    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-    # 只在指定目录下查找库文件
-    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-    # 只在指定目录下查找头文件
-    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-    # 只在指定目录下查找依赖包
-    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-    include_directories(
-        ${TOOL_CHAIN_DIR}/include
-        )
-    set(CMAKE_INCLUDE_PATH 
-        ${TOOL_CHAIN_INCLUDE}
-        )
-    set(CMAKE_LIBRARY_PATH 
-        ${TOOL_CHAIN_LIB}
-        )
-endif(ARM_CROSS_COMPILE)
+MESSAGE(STATUS "CMAKE_C_COMPILER:" ${CMAKE_C_COMPILER})
+MESSAGE(STATUS "CMAKE_CXX_COMPILER:" ${CMAKE_CXX_COMPILER})
+#对FIND_PROGRAM()起作用，有三种取值，NEVER,ONLY,BOTH,第一个表示不在你CMAKE_FIND_ROOT_PATH下进行查找，第二个表示只在这个路径下查找，第三个表示先查找这个路径，再查找全局路径，对于这个变量来说，一般都是调用宿主机的程序，所以一般都设置成NEVER
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+#下面的三个选项表示只在交叉环境中查找库和头文件
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 #添加头文件的路径 
 include_directories(src/common)

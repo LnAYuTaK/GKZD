@@ -27,48 +27,15 @@ EnHandleResult TCPListenerImpl::OnHandShake(ITcpServer* pSender, CONNID dwConnID
 /***********************************************************************************************/
 EnHandleResult TCPListenerImpl::OnReceive(ITcpServer* pSender, CONNID dwConnID, int iLength)
 {
-    std::cout << "Receive" <<std::endl;
-    CBufferPtr buffer(100);
-    EnFetchResult result = app()->newMgr()->Server()->Fetch(dwConnID, buffer, (int)buffer.Size());
-    TPkgHeader* pHeader = (TPkgHeader*)buffer.Ptr();
-
-    CLOG_INFO("(head) -> seq: %d, body_len: %d", pHeader->seq, pHeader->body_len);
-    
-    // TPkgInfo* pInfo			= ::FindPkgInfo(pSender, dwConnID);
-    // if(pInfo != nullptr)
-    // {
-    //     int required = pInfo->length;
-    //     int remain =   iLength;
-
-    //     while(remain >= required)
-    //     {
-    //         remain -= required;
-    //         CBufferPtr buffer(required);
-
-    //         EnFetchResult result = app()->newMgr()->Server()->Fetch(dwConnID, buffer, (int)buffer.Size());
-    //         if(result == FR_OK)
-    //         {
-    //             if(pInfo->is_header)
-    //             {
-    //                 TPkgHeader* pHeader = (TPkgHeader*)buffer.Ptr();
-    //                 CLOG_INFO("(head) -> seq: %d, body_len: %d", pHeader->seq, pHeader->body_len);
-    //                 required = pHeader->body_len;
-    //             }
-    //             else
-    //             {
-    //                 TPkgBody* pBody = (TPkgBody*)(BYTE*)buffer;
-    //                 CLOG_INFO("(body) -> name: %s, age: %d, desc: %s", pBody->name, pBody->age, pBody->desc);
-    //                 required = sizeof(TPkgHeader);
-    //             }
-    //             pInfo->is_header = !pInfo->is_header;
-    //             pInfo->length	 = required;
-
-    //             if(!pSender->Send(dwConnID, buffer, (int)buffer.Size()))
-    //                 return HR_ERROR;
-    //         }
-    //     }
-    // }
-	return HR_OK;
+    ITcpPullServer* pServer	= ITcpPullServer::FromS(pSender);
+    CBufferPtr buffer(sizeof(TPkgHeader));
+    EnFetchResult result = pServer->Fetch(dwConnID, buffer, (int)buffer.Size());
+    TPkgHeader *header  =  (TPkgHeader*)(buffer.Ptr());
+    CLOG_INFO("(head) -> seq: %u, body_len: %d", header->seq, header->body_len);
+    header->seq ++ ;
+    header->body_len ++ ;
+    pServer->Send(dwConnID,buffer,sizeof(TPkgHeader));
+    return HR_OK;
 }
 /***********************************************************************************************/
 EnHandleResult TCPListenerImpl::OnSend(ITcpServer* pSender, CONNID dwConnID, const BYTE* pData, int iLength)

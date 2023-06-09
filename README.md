@@ -61,7 +61,7 @@ $ cmake --build .
 openssl 交叉编译
 $ tar -xvf openssl-1.1.1u.tar.gz
 $ mkdir openssl_aarch64
-$ ./config no-asm shared --prefix=/ssl/openssl-1.1.1u/openssl_aarch64 --cross-compile-prefix=aarch64-linux-gnu-
+$ ./config no-asm shared --prefix=/ssl/openssl-1.1.1u/openssl_aarch64 --cross-compile-prefix=aarch64-linux-
 修改 Makefile 文件，将 -m64 移除，否则会出现编译报错
 $ make
 $ make  install
@@ -83,7 +83,7 @@ $ make && make install  生成的文件在 arm_build/install 下面
 mqttcpp交叉编译
 $ mkdir arm_build && cd arm_build
 $  cmake .. \
-  -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ \
+  -DCMAKE_CXX_COMPILER=aarch64-linux-g++ \
   -DCMAKE_INSTALL_PREFIX=./install \
   -DPAHO_MQTT_C_LIBRARIES=/home/forlinx/GKZD/LibSoure/paho.mqtt.c/arm_build/install/lib/libpaho-mqtt3a.so \
   -DPAHO_MQTT_C_INCLUDE_DIRS=/home/forlinx/GKZD/LibSoure/paho.mqtt.c/arm_build/install/include/ \

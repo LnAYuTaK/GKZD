@@ -12,7 +12,7 @@
 #include "ThreadPool.h"
 #include <iostream>
 #include <string>
-
+#include "mqttClientCloud.h"
 class SerialManager;
 class NetWorkManager;
 class Application
@@ -32,6 +32,7 @@ private:
    ThreadPool     *  _threadPool;
    SerialManager  *  _serialMgr;
    NetWorkManager *  _netMgr;
+   cloud::mqtt_client g_client;
 };
 
 
