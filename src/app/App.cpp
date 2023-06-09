@@ -20,7 +20,6 @@ void on_cloud_message(const std::string& data)
 {
     std::cout<<"received data is: "<<data<<std::endl;
 }
-
 #define  MAX_THREAD_NUM 4
 /***********************************************************/
 Application  *Application::_app = nullptr; 

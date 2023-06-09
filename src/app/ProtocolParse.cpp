@@ -25,12 +25,6 @@ ProtocolParse::~ProtocolParse()
 /***********************************************************************************************/
 void ProtocolHandle(char *data ,int length,DecodingType type)
 {
-    switch (type)
-    {
-    case TCP_ENCOD:
-        break;
-    default:
-        break;
-    }
+
 }
 /***********************************************************************************************/

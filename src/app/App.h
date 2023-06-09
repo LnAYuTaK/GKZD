@@ -32,7 +32,7 @@ private:
    ThreadPool     *  _threadPool;
    SerialManager  *  _serialMgr;
    NetWorkManager *  _netMgr;
-   cloud::mqtt_client g_client;
+   mqtt_client g_client;
 };
 
 
