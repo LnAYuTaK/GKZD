@@ -28,6 +28,7 @@ CSerialPort是一个基于C/C++的轻量级开源跨平台串口类库，可以�
 + 底层网络采用[HP-Socket](https://github.com/ldcsaa/HP-Socket)网络处理
 HPSocket 是一个小型高性能网络处理框架底层采用epoll作为异步模型可以自动拆包解包处理
 #### 交叉编译第三方库
++ 默认的交叉编译链路径 /opt/host/bin
 + 默认工作路径 /home/forlinx/GKZD 位置不同自行修改
 ***安装依赖***
 ```
@@ -40,7 +41,8 @@ sudo apt-get install doxygen graphviz
 ```console
 $ cd HP-Socket/Linux/script
 $ sudo chmod 777 *.sh
-$ ./compile.sh aarch64-linux-gnu-g++ -p arm64
+//注意 要注释掉/include/hpsocket/GlobalDef.h   70行的typedef LLONG  __time64_t;
+$ ./compile.sh -c aarch64-linux-g++ -p arm64
 
 //编译生成的文件在 HP-Socket/Linux/lib/hpsocket/arm64/ 
 将libhpsocket.so   libhpsocket.so.5  libhpsocket.so.5.9.1 复制到
@@ -50,6 +52,7 @@ $ ./compile.sh aarch64-linux-gnu-g++ -p arm64
 ```console
 $ cd CSerialPort
 $ mkdir arm_build && cd arm_build
+//修改/cmake/toolchain_aarch64.cmake 去掉gnu
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=./cmake/toolchain_aarch64.cmake
 $ cmake --build .
 //编译生成的文件在 CSerialPort/arm_build/lib/
@@ -61,35 +64,37 @@ $ cmake --build .
 openssl 交叉编译
 $ tar -xvf openssl-1.1.1u.tar.gz
 $ mkdir openssl_aarch64
-$ ./config no-asm shared --prefix=/ssl/openssl-1.1.1u/openssl_aarch64 --cross-compile-prefix=aarch64-linux-
+$ ./config no-asm shared --prefix=/home/forlinx/WorkSpace/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64 --cross-compile-prefix=aarch64-linux-
 修改 Makefile 文件，将 -m64 移除，否则会出现编译报错
 $ make
 $ make  install
 //编译生成的文件在 /openssl_aarch64
 ```
-```
+
+```console
 mqttc交叉编译
-$ 修改创建 toolchain.linux-aarch64.cmake 模仿同文件夹下arm11 就可以
+$ 修改创建 toolchain.linux-aarch64.cmake 修改编译链为aarch64-linux-gcc 修改arm为aarch64
 $ mkdir arm_build && cd arm_build
 $ cmake  ..  -DPAHO_WITH_SSL=TRUE -DPAHO_BUILD_SAMPLES=TRUE \
     -DPAHO_BUILD_DOCUMENTATION=TRUE \
     -DCMAKE_INSTALL_PREFIX=./install  \
-    -DOPENSSL_ROOT_DIR="/home/forlinx/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/" \
-    -DCMAKE_TOOLCHAIN_FILE=/home/forlinx/GKZD/LibSoure/paho.mqtt.c/cmake/toolchain.linux-aarch64.cmake
+    -DOPENSSL_ROOT_DIR="/home/forlinx/WorkSpace/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/" \
+    -DCMAKE_TOOLCHAIN_FILE=/home/forlinx/WorkSpace/GKZD/LibSoure/paho.mqtt.c/cmake/toolchain.linux-aarch64.cmake
 $ make && make install  生成的文件在 arm_build/install 下面
 将 arm_build/install/lib 下libpaho-mqtt3as.so.1 libpaho-mqtt3as.so libpaho-mqtt3as.so.1.3.12复制到 /GKZD/lib 文件夹下
 ```
-```
+
+```console
 mqttcpp交叉编译
 $ mkdir arm_build && cd arm_build
 $  cmake .. \
   -DCMAKE_CXX_COMPILER=aarch64-linux-g++ \
   -DCMAKE_INSTALL_PREFIX=./install \
-  -DPAHO_MQTT_C_LIBRARIES=/home/forlinx/GKZD/LibSoure/paho.mqtt.c/arm_build/install/lib/libpaho-mqtt3a.so \
-  -DPAHO_MQTT_C_INCLUDE_DIRS=/home/forlinx/GKZD/LibSoure/paho.mqtt.c/arm_build/install/include/ \
-  -DOPENSSL_SSL_LIBRARY=/home/forlinx/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/lib/libssl.so \
-  -DOPENSSL_INCLUDE_DIR=/home/forlinx/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/include \
-  -DOPENSSL_CRYPTO_LIBRARY=/home/forlinx/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/lib/libcrypto.so
+  -DPAHO_MQTT_C_LIBRARIES=/home/forlinx/WorkSpace/GKZD/LibSoure/paho.mqtt.c/arm_build/install/lib/libpaho-mqtt3a.so \
+  -DPAHO_MQTT_C_INCLUDE_DIRS=/home/forlinx/WorkSpace/GKZD/LibSoure/paho.mqtt.c/arm_build/install/include/ \
+  -DOPENSSL_SSL_LIBRARY=/home/forlinx/WorkSpace/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/lib/libssl.so \
+  -DOPENSSL_INCLUDE_DIR=/home/forlinx/WorkSpace/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/include \
+  -DOPENSSL_CRYPTO_LIBRARY=/home/forlinx/WorkSpace/GKZD/LibSoure/openssl-1.1.1u/openssl_aarch64/lib/libcrypto.so
   make && make install 生成的文件在 arm_build/install 下面
   将arm_build/install/lib 下libpaho-mqttpp3.so  libpaho-mqttpp3.so.1  libpaho-mqttpp3.so.1.2.0 复制到 /GKZD/lib 文件夹下
 ```
