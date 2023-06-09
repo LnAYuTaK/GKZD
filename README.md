@@ -28,6 +28,7 @@ CSerialPort是一个基于C/C++的轻量级开源跨平台串口类库，可以�
 + 底层网络采用[HP-Socket](https://github.com/ldcsaa/HP-Socket)网络处理
 HPSocket 是一个小型高性能网络处理框架底层采用epoll作为异步模型可以自动拆包解包处理
 #### 交叉编译第三方库
++ 默认的交叉编译链路径 /opt/host/bin
 + 默认工作路径 /home/forlinx/GKZD 位置不同自行修改
 ***安装依赖***
 ```
@@ -51,6 +52,7 @@ $ ./compile.sh -c aarch64-linux-g++ -p arm64
 ```console
 $ cd CSerialPort
 $ mkdir arm_build && cd arm_build
+//修改/cmake/toolchain_aarch64.cmake 去掉gnu
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=./cmake/toolchain_aarch64.cmake
 $ cmake --build .
 //编译生成的文件在 CSerialPort/arm_build/lib/
