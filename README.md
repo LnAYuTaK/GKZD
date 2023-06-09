@@ -1,24 +1,25 @@
 # 项目概述
 ### 项目文件结构
 ``` DIR
-  
-  /build  //cmake生成中间文件 编译项目目录
-
-  /LibSoure //底层库源码
-
-  /lib   //底层支持库 编译第三库的文件应该放到此处
-
-  /src   //项目源文件+头文件目录
-  -  /app           //应用层
-  -  /common        //公共方法文件(通用方法)
-  -  /log           //日志模块
-  -  /thirdparty    //第三方库文件头文件
-
-  CMakeLists.txt  
-
-  LICENSE
-
-  README.md
+|-- GKZD
+    |-- CMakeLists.txt
+    |-- LICENSE
+    |-- README.md
+    |-- LibSoure 
+    |-- bin
+    |-- build
+    |-- lib
+    |-- src
+    |   |-- main.cpp
+    |   |-- app
+    |   |-- common
+    |   |-- driver
+    |   |-- log
+    |   |-- thirdparty
+    |       |-- CSerialPort
+    |       |-- HP-Socket
+    |       |-- MQTT
+    |-- test
 ```
 ## 第三方库交叉编译
 #### 介绍

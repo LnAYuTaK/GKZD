@@ -8,7 +8,7 @@
 #include <dirent.h>
 #include "CLOG.h"
 #include "NetWorkManager.h"
-#include "SerialManager.h"
+// #include "SerialManager.h"
 #include "ThreadPool.h"
 #include <iostream>
 #include <string>
@@ -26,11 +26,11 @@ public:
     static Application* _app;
 
     NetWorkManager * newMgr     (){return this->_netMgr;}
-    SerialManager *  serialMgr  (){return this->_serialMgr;}
+//    SerialManager *  serialMgr  (){return this->_serialMgr;}
     ThreadPool *     threadPool (){return this->_threadPool;}
 private:
    ThreadPool     *  _threadPool;
-   SerialManager  *  _serialMgr;
+//    SerialManager  *  _serialMgr;
    NetWorkManager *  _netMgr;
    mqtt_client g_client;
 };

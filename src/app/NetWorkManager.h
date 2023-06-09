@@ -4,7 +4,6 @@
 class TCPListenerImpl :public  CTcpPullServerListener
 {
 public:
-
 	virtual EnHandleResult OnPrepareListen(ITcpServer* pSender, SOCKET soListen);
 	virtual EnHandleResult OnAccept(ITcpServer* pSender, CONNID dwConnID, UINT_PTR soClient);
 	virtual EnHandleResult OnHandShake(ITcpServer* pSender, CONNID dwConnID);

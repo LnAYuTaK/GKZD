@@ -25,13 +25,13 @@ void on_cloud_message(const std::string& data)
 Application  *Application::_app = nullptr; 
 Application::Application(/* args */)
    :_threadPool(nullptr)
-   ,_serialMgr(nullptr)
+ //  ,_serialMgr(nullptr)
    ,_netMgr(nullptr)
 {
    //注意顺序
    _app        =  this;
    // _threadPool =  new ThreadPool(MAX_THREAD_NUM);
-   _serialMgr  =  new SerialManager();
+   // _serialMgr  =  new SerialManager();
    _netMgr     =  new NetWorkManager();
 }
 /***********************************************************/
