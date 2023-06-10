@@ -32,7 +32,6 @@ HPSocket 是一个小型高性能网络处理框架底层采用epoll作为异步
 #### 交叉编译第三方库
 + 默认的交叉编译链路径 /opt/host/bin
 + 默认工作路径 /home/forlinx/GKZD 位置不同自行修改
-```
 ## ***HP-Socket交叉编译***
 ```console
 $ cd HP-Socket/Linux/script
