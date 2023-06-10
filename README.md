@@ -1,25 +1,26 @@
 # 项目概述
+
 ### 项目文件结构
 ``` DIR
 |-- GKZD
     |-- CMakeLists.txt
     |-- LICENSE
     |-- README.md
-    |-- LibSoure 
-    |-- bin
-    |-- build
-    |-- lib
-    |-- src
-    |   |-- main.cpp
-    |   |-- app
-    |   |-- common
-    |   |-- driver
-    |   |-- log
-    |   |-- thirdparty
+    |-- LibSoure            //第三方库的源码
+    |-- bin                 //可执行文件
+    |-- build     
+    |-- lib                 //所需要的动态库
+    |-- src                 //源码
+    |   |-- main.cpp  
+    |   |-- app             //应用层
+    |   |-- common          //公用文件夹
+    |   |-- driver          //外设
+    |   |-- log             //日志模块
+    |   |-- thirdparty      //第三方库头文件
     |       |-- CSerialPort
     |       |-- HP-Socket
     |       |-- MQTT
-    |-- test
+    |-- test                //测试工程TUDO
 ```
 ## 第三方库交叉编译
 #### 介绍
@@ -31,12 +32,6 @@ HPSocket 是一个小型高性能网络处理框架底层采用epoll作为异步
 #### 交叉编译第三方库
 + 默认的交叉编译链路径 /opt/host/bin
 + 默认工作路径 /home/forlinx/GKZD 位置不同自行修改
-***安装依赖***
-```
-sudo apt-get install g++-aarch64-linux-gnu
-sudo apt-get install gcc-aarch64-linux-gnu
-sudo apt-get install libssl-dev
-sudo apt-get install doxygen graphviz
 ```
 ## ***HP-Socket交叉编译***
 ```console
@@ -138,9 +133,9 @@ auto submit(F&& f, Args&&... args) -> std::future<decltype(f(args...))> {
 ```
 ### 日志模块 
 日志模块采用单例模式加锁的方式并提供三个宏定义并有三个级别的日志记录:
-+ `LOG_INFO`
-+ `LOG_WARNING`
-+ `LOG_ERROR`
++ `CLOG_INFO`
++ `CLOG_WARNING`
++ `CLOG_ERROR`
 ### 网络管理模块(NetWorkManager)
 提供公用的网络收发处理
 ```CPP
