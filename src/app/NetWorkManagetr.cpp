@@ -67,6 +67,9 @@ NetWorkManager::NetWorkManager(/* args */)
 /***********************************************************************************************/
 NetWorkManager::~NetWorkManager()
 {
-
+    if(server!= nullptr)
+    {
+        HP_Destroy_TcpPullServer(this->server);
+    }
 }
 /***********************************************************************************************/

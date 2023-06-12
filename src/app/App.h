@@ -6,31 +6,36 @@
 #include <math.h>
 #include <sys/types.h>
 #include <dirent.h>
-#include "CLOG.h"
-#include "NetWorkManager.h"
-#include "SerialManager.h"
-#include "ThreadPool.h"
+#include <chrono>
+#include <memory>
+//std
 #include <iostream>
 #include <string>
+//user
 #include "mqttClientCloud.h"
-class SerialManager;
+#include "CLOG.h"
+#include "NetWorkManager.h"
+#include "ThreadPool.h"
+#include "DriverManager.h"
+class DriverManager;
 class NetWorkManager;
 class Application
 {
 public:
     Application();
     ~Application();
-    //
+
     void Init();
     void Start();
     static Application* _app;
 
     NetWorkManager * newMgr     (){return this->_netMgr;}
-    SerialManager *  serialMgr  (){return this->_serialMgr;}
     ThreadPool *     threadPool (){return this->_threadPool;}
+    DriverManager *  driverMgr  (){return this->_driverMgr;}
+
 private:
+   DriverManager *   _driverMgr;
    ThreadPool     *  _threadPool;
-   SerialManager  *  _serialMgr;
    NetWorkManager *  _netMgr;
    mqtt_client g_client;
 };

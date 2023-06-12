@@ -10,11 +10,6 @@
  * 
  */
 #include "App.h"
-#include "NetWorkManager.h"
-#include "SerialManager.h"
-#include <memory>
-#include <thread>
-#include <chrono>
 
 void on_cloud_message(const std::string& data)
 {
@@ -25,14 +20,15 @@ void on_cloud_message(const std::string& data)
 Application  *Application::_app = nullptr; 
 Application::Application(/* args */)
    :_threadPool(nullptr)
-   ,_serialMgr(nullptr)
+  ,_driverMgr(nullptr)
    ,_netMgr(nullptr)
 {
    //注意顺序
    _app        =  this;
    // _threadPool =  new ThreadPool(MAX_THREAD_NUM);
-   _serialMgr  =  new SerialManager();
    _netMgr     =  new NetWorkManager();
+   _driverMgr  =  new DriverManager();
+   
 }
 /***********************************************************/
 Application* app(void)
@@ -43,14 +39,21 @@ Application* app(void)
 Application::~Application()
 {
    // _threadPool->shutdown();
-   // delete _serialMgr;
-   // delete _netMgr;
-   // delete _threadPool;
-   
-   // _threadPool = nullptr;
-   // _serialMgr  = nullptr;
-   // _netMgr     = nullptr;
-   // _app        = nullptr;
+   if( _driverMgr!= nullptr)
+   {
+      delete  _driverMgr;
+      _driverMgr = nullptr;
+   }
+   if(_netMgr != nullptr)
+   {
+      delete _netMgr;
+      _netMgr = nullptr;
+   }
+   if(_threadPool != nullptr)
+   {
+      delete _threadPool;
+      _threadPool = nullptr;
+   }
 }
 /***********************************************************/
 void Application::Init(/* args */)
