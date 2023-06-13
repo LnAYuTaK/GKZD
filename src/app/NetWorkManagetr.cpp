@@ -3,10 +3,13 @@
 #include "NetWorkManager.h"
 #include "App.h"
 #include "CLOG.h"
-#include "ProtocolHelper.h"
+#include "BufferPtr.h"
+
+#define PORT 5351
+#define IP   "192.168.16.115"
+
 EnHandleResult TCPListenerImpl::OnPrepareListen(ITcpServer* pSender, SOCKET soListen)
 {
-    std::cout << " Listen !" <<std::endl;
     return HR_OK;
 }
 /***********************************************************************************************/
@@ -16,7 +19,7 @@ EnHandleResult TCPListenerImpl::OnAccept(ITcpServer* pSender, CONNID dwConnID, U
     int iAddressLen = sizeof(szAddress) / sizeof(TCHAR);
     USHORT usPort;
 	pSender->GetRemoteAddress(dwConnID, szAddress, iAddressLen, usPort);
-    std::cout << "ConnectID:" <<dwConnID <<  "Address:" << szAddress << "Port:" << usPort << std::endl;
+    CLOG_INFO("IP:%s--Port:%u",szAddress,usPort);
     return HR_OK;
 }
 /***********************************************************************************************/
@@ -28,13 +31,10 @@ EnHandleResult TCPListenerImpl::OnHandShake(ITcpServer* pSender, CONNID dwConnID
 EnHandleResult TCPListenerImpl::OnReceive(ITcpServer* pSender, CONNID dwConnID, int iLength)
 {
     ITcpPullServer* pServer	= ITcpPullServer::FromS(pSender);
-    CBufferPtr buffer(sizeof(TPkgHeader));
-    EnFetchResult result = pServer->Fetch(dwConnID, buffer, (int)buffer.Size());
-    TPkgHeader *header  =  (TPkgHeader*)(buffer.Ptr());
-    CLOG_INFO("(head) -> seq: %u, body_len: %d", header->seq, header->body_len);
-    header->seq ++ ;
-    header->body_len ++ ;
-    pServer->Send(dwConnID,buffer,sizeof(TPkgHeader));
+    CBufferPtr buffer(iLength);
+    EnFetchResult result = pServer->Fetch(dwConnID, buffer, iLength);
+    CLOG_INFO("%s",buffer.Ptr());
+    pServer->Send(dwConnID,buffer,iLength);
     return HR_OK;
 }
 /***********************************************************************************************/
@@ -44,13 +44,13 @@ EnHandleResult TCPListenerImpl::OnSend(ITcpServer* pSender, CONNID dwConnID, con
 }
 /***********************************************************************************************/
 EnHandleResult TCPListenerImpl::OnClose(ITcpServer* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode)
-{
+{   
+    CLOG_INFO("%lu: Close",dwConnID);
     return HR_OK;
 }
 /***********************************************************************************************/
 EnHandleResult TCPListenerImpl::OnShutdown(ITcpServer* pSender)
 {
-    CLOG_INFO("%s", "TCP Server ShutDown");
     return HR_OK;
 }
 /***********************************************************************************************/
@@ -58,11 +58,14 @@ NetWorkManager::NetWorkManager(/* args */)
     :listener()
     ,server(&listener)
 {
-  	if(!server->Start("192.168.0.232", 5351))
+  	if(server->Start(IP,PORT))
     {
-        CLOG_INFO("%s", "TCP Server Start");
+        CLOG_INFO("%s--%s--%d ","TCP Server Start",IP,PORT);
     }
- 
+    else
+    {
+        CLOG_ERROR("%s","TCP Server Start Error");
+    }
 }
 /***********************************************************************************************/
 NetWorkManager::~NetWorkManager()

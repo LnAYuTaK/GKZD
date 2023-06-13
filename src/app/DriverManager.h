@@ -10,7 +10,6 @@ SERIAL_DRIVER_CLASS(Serial2);
 
 class DriverManager
 {
-
 public:
 
     DriverManager();
@@ -19,8 +18,8 @@ public:
     void addDriver(DriverBase *driver);
 private:
 
-    DriverBase* serial1 =nullptr;
-    DriverBase* serial2 =nullptr;
+    Serial1* _serial1 =nullptr;
+    Serial2* _serial2 =nullptr;
     std::mutex _mt;
 
     std::vector<DriverBase *>_driverList;

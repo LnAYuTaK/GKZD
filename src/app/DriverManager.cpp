@@ -3,23 +3,19 @@
 #include "CLOG.h"
 DriverManager::DriverManager(/* args */)
 {
-   serial1 =  new Serial1();
-   serial2 =  new Serial2();
+   _serial1 =  new Serial1();
+   _serial2 =  new Serial2();
 
-   auto s1 = dynamic_cast<Serial1 *>(serial1);
-   s1->init("/dev/ttyS5");
-   if(s1->open())
+   _serial1->init("/dev/ttyS5");
+   if(_serial1->open())
    {
       CLOG_INFO("%s","ttyS5 open");
    }
-   auto s2 = dynamic_cast<Serial2 *>(serial2);
-   s2->init("/dev/ttyS4");
-   if(s2->open())
+   _serial2->init("/dev/ttyS4");
+   if(_serial2->open())
    {
        CLOG_INFO("%s","ttyS4 open");
    }
-   this->addDriver(serial1);
-   this->addDriver(serial2);
 }
 /***********************************************************************************************/
 DriverManager::~DriverManager()
@@ -90,7 +86,6 @@ void Serial2::onReadEvent(const char* portName, unsigned int readBufferLen)
                 data = NULL;
             }
         }
-
 }
 /***********************************************************************************************/
 
