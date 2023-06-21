@@ -1,48 +1,47 @@
 #pragma once 
-#include <unistd.h>
-#include <signal.h>
-#include <semaphore.h>
 #include <thread>
-#include <math.h>
-#include <sys/types.h>
-#include <dirent.h>
 #include <chrono>
 #include <memory>
 //std
 #include <iostream>
 #include <string>
 //user
-#include "mqttClientCloud.h"
+#include "SimpleSigleton.h"
 #include "CLOG.h"
 #include "NetWorkManager.h"
 #include "ThreadPool.h"
 #include "DriverManager.h"
+#include "BlockerManager.h"
 class DriverManager;
 class NetWorkManager;
 class Application
 {
+    DISALLOW_COPY_AND_ASSIGN(Application);
+
+    using DriverMgr_Ptr  = std::shared_ptr<DriverManager>;
+    using NetWorkMgr_Ptr = std::shared_ptr<NetWorkManager>;
+    using BlockerMgr_Ptr = std::shared_ptr<BlockerManager>;
+
 public:
     Application();
     ~Application();
 
     void Init();
     void Start();
-    static Application* _app;
 
-    NetWorkManager * newMgr     (){return this->_netMgr;}
-    ThreadPool *     threadPool (){return this->_threadPool;}
-    DriverManager *  driverMgr  (){return this->_driverMgr;}
+    static Application *_app;
+
+   DriverMgr_Ptr &  getDriverMgr  ()  {return this->_driverMgr;}
+   NetWorkMgr_Ptr & getNetWorkMgr ()  {return this->_netWorkMgr;}
+   BlockerMgr_Ptr   getBlockMgr   ()  {return BlockerManager::Instance();}
+   //TUDO
+
+   //ParaMgr_Ptr
 
 private:
-   DriverManager *   _driverMgr;
-   ThreadPool     *  _threadPool;
-   NetWorkManager *  _netMgr;
-   mqtt_client g_client;
+   NetWorkMgr_Ptr _netWorkMgr;
+   DriverMgr_Ptr  _driverMgr;
 };
-
-
-
-
 
 Application * app();
 

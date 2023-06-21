@@ -6,7 +6,7 @@
 #include "BufferPtr.h"
 
 #define PORT 5351
-#define IP   "192.168.16.115"
+#define IP  "192.168.16.115"
 
 EnHandleResult TCPListenerImpl::OnPrepareListen(ITcpServer* pSender, SOCKET soListen)
 {
@@ -58,14 +58,7 @@ NetWorkManager::NetWorkManager(/* args */)
     :listener()
     ,server(&listener)
 {
-  	if(server->Start(IP,PORT))
-    {
-        CLOG_INFO("%s--%s--%d ","TCP Server Start",IP,PORT);
-    }
-    else
-    {
-        CLOG_ERROR("%s","TCP Server Start Error");
-    }
+
 }
 /***********************************************************************************************/
 NetWorkManager::~NetWorkManager()

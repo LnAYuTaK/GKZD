@@ -31,7 +31,7 @@ include_directories(src/app)
 include_directories(src/thirdparty/CSerialPort)
 include_directories(src/thirdparty/HP-Socket)
 include_directories(src/thirdparty/MQTT)
-
+include_directories(src/thirdparty/Json)
 #输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
@@ -62,8 +62,10 @@ if(BUILD_USE_STATIC)
     message(STATUS "Use  Static ThirdLib")
     target_link_libraries(${PROJECT_NAME}  libcserialport.a)
     target_link_libraries(${PROJECT_NAME}  libhpsocket.a)
-    target_link_libraries(${PROJECT_NAME}  libpaho-mqttpp3.a)
+    target_link_libraries(${PROJECT_NAME}  libjsoncpp.a)
     target_link_libraries(${PROJECT_NAME}  libpaho-mqtt3a.a)
+    target_link_libraries(${PROJECT_NAME}  libpaho-mqtt3c.a)
+    target_link_libraries(${PROJECT_NAME}  libpaho-mqttpp3.a)
 else()
     #使用第三方静态库编译项目
     message(STATUS "Use  Shard ThirdLib")

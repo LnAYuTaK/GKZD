@@ -2,6 +2,7 @@
 #include <vector>
 #include <mutex>
 #include "SerialDriver.h"
+#include <memory>
 class SerialDirver;
 class SerialListener;
 
@@ -10,19 +11,20 @@ SERIAL_DRIVER_CLASS(Serial2);
 
 class DriverManager
 {
-public:
 
+public:
     DriverManager();
     ~DriverManager();
+    
+    std::shared_ptr<Serial1>& serial1(){return _serial1;}
+    std::shared_ptr<Serial2>& serial2(){return _serial2;}
 
-    void addDriver(DriverBase *driver);
 private:
+    std::shared_ptr<Serial1> _serial1;
+    std::shared_ptr<Serial2> _serial2;
 
-    Serial1* _serial1 =nullptr;
-    Serial2* _serial2 =nullptr;
     std::mutex _mt;
-
-    std::vector<DriverBase *>_driverList;
+    // std::vector<DriverBase *>_driverList;
 };
 
 

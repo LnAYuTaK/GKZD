@@ -13,18 +13,13 @@ public:
 	virtual EnHandleResult OnShutdown(ITcpServer* pSender);
 };
 
-enum NetWorkType{ 
-	 UDP,
-	 TCP,
-	 MQTT
-};
-
 class NetWorkManager
 {
 public:
 	NetWorkManager(/* args */);
 	~NetWorkManager();
-	ITcpPullServer  *Server() {return this->server.Get();}	
+	CTcpPullServerPtr & Server() {return server;}	
+
 private:
     TCPListenerImpl  listener;
 	CTcpPullServerPtr server;

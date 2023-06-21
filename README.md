@@ -28,6 +28,7 @@ CSerialPort是一个基于C/C++的轻量级开源跨平台串口类库，可以�
 + 底层网络采用[HP-Socket](https://github.com/ldcsaa/HP-Socket)网络处理
 HPSocket 是一个小型高性能网络处理框架底层采用epoll作为异步模型可以自动拆包解包处理
 + 底层MQTT 库使用[PAHO-MQTT-CPP](https://github.com/eclipse/paho.mqtt.cpp)PAHO MQTT C++ 提供了一套面向对象的 API，使开发者可以方便地使用 MQTT 协议进行通信。它支持基本的 MQTT 操作，如连接到服务器，发布和订阅主题，处理消息，断开连接等。此外，它还支持 SSL/TLS 安全传输和 MQTT 5.0 协议中的新功能，如会话和请求/响应机制。
+
 ### ***交叉编译第三方库***
 + 默认的交叉编译链路径 /opt/host/bin
 + 默认工作路径 /home/forlinx/WorkSpace/GKZD 位置不同自行修改
@@ -146,7 +147,7 @@ EnHandleResult TCPListenerImpl::OnReceive(IUdpClient* pSender, CONNID dwConnID, 
     return HR_OK;
 }
 ```
-### 管理模块(DriverManager)
+### 设备管理模块(DriverManager)
 
 #### 实例如何创建一个串口设备
 在 **.h文件中** 中声明一个串口设备
@@ -176,6 +177,38 @@ void TestSerial::onReadEvent(const char* portName, unsigned int readBufferLen)
 testSerial.init("/dev/ttySx");
 testSerial.open();
 testSerial.writeData(data,size)
+```
+### 任务分发发布模块(BrokerManager)
+```CPP
+//实现一个标准观察者设计模式
+//使用示例
+typedef struct {
+  int data =10;
+  char msg[20] = "mojap";
+}Data;
+void GasMsgEventHandle1(const std::shared_ptr<Data>& msg_ptr) {  
+  std::cout << "我是处理1"<<std::endl;
+  std::cout << "处理消息a::" <<msg_ptr->data <<std::endl;
+  std::cout << "处理消息b::"<<msg_ptr->msg<< std::endl;
+}
+void GasMsgEventHandle2(const std::shared_ptr<Data>& msg_ptr) {  
+  std::cout << "我是处理2"<<std::endl;
+  std::cout << "处理消息a::" <<msg_ptr->data <<std::endl;
+  std::cout << "处理消息b::"<<msg_ptr->msg<< std::endl;
+}
+int main(int argc, char const *argv[])
+{
+  auto block_mgr = BlockerManager::Instance();
+  //交付给任务中心
+  block_mgr->Subscribe<Data>("GasMsgEvent1",2,"Uart",GasMsgEventHandle1);
+  block_mgr->Subscribe<Data>("GasMsgEvent2",2,"event1handle2",GasMsgEventHandle2);
+  block_mgr->Observe();
+  Data s1{1,"12345"};
+  Data s2{2,"67890"};
+  block_mgr->Publish<Data>("GasMsgEvent1",s1);
+  block_mgr->Publish<Data>("GasMsgEvent2",s2);
+  return 0;
+}
 ```
 
 ##  **项目SSH端口映射方法**
@@ -216,7 +249,6 @@ remote_port =6000
 ./frpc -c frpc.ini
 ```
 8. ssh登录 IP:47.98.232.35  Port:6000
-
 
 
 
