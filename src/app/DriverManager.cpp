@@ -21,16 +21,15 @@ void Serial1::onReadEvent(const char* portName, unsigned int readBufferLen)
             {
                 // read
                 int recLen = readData(data, readBufferLen);
-
                 if (recLen > 0)
                 {
                     data[recLen] = '\0';
                     std::cout << portName  << ", Length: " << recLen << ", Str: " << data << std::endl;
-                    // return receive data
+                    //return receive data
                     writeData(data, recLen);
                 }
                 delete[] data;
-                data = NULL;
+                data = nullptr;
             }
         }
 }
@@ -41,7 +40,6 @@ void Serial2::onReadEvent(const char* portName, unsigned int readBufferLen)
         if (readBufferLen > 0)
         {
             char *data = new char[readBufferLen + 1]; // '\0'
-
             if (data)
             {
                 // read
@@ -54,7 +52,7 @@ void Serial2::onReadEvent(const char* portName, unsigned int readBufferLen)
                     writeData(data, recLen);
                 }
                 delete[] data;
-                data = NULL;
+                data = nullptr;
             }
         }
 }

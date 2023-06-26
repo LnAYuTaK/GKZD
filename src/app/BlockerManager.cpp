@@ -1,6 +1,6 @@
 #include "BlockerManager.h"
 BlockerManager::BlockerManager(){
-;
+  this->Observe();
 }
 /***********************************************************************************************/
 BlockerManager::~BlockerManager() { blockers_.clear(); }

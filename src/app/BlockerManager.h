@@ -20,11 +20,11 @@ class BlockerManager
         
   DISALLOW_COPY_AND_ASSIGN(BlockerManager)
   using BlockerMap =  std::unordered_map<std::string, std::shared_ptr<BlockerBase>>;
-
 public:
   BlockerManager();
   virtual ~BlockerManager();
 
+  //发布消息
   template <typename T>
   bool Publish(const std::string& channel_name,
                const typename Blocker<T>::MessagePtr& msg);
@@ -32,7 +32,7 @@ public:
   template <typename T>
   bool Publish(const std::string& channel_name,
                const typename Blocker<T>::MessageType& msg);
-
+  //订阅消息
   template <typename T>
   bool Subscribe(const std::string& channel_name, size_t capacity,
                  const std::string& callback_id,

@@ -66,7 +66,6 @@ public:
   ThreadPool & operator=(const ThreadPool &) = delete;
   ThreadPool & operator=(ThreadPool &&) = delete;
   
-
   //结束关闭所有线程
   void shutdown() {
     m_shutdown = true;

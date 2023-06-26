@@ -10,7 +10,9 @@ Application::Application(/* args */)
    ,_blockerMgr(std::make_shared<BlockerManager>())
    ,_netWorkMgr(std::make_shared<NetWorkManager>())
    ,_driverMgr(std::make_shared<DriverManager>())
-   ,_dataBase(DB_FILE){
+   ,_dataBase(DB_FILE)
+{
+   
 }
 /***********************************************************/
 Application* app(void)

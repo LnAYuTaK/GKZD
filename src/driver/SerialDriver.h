@@ -1,9 +1,11 @@
+
 #pragma once 
 
 #include "SerialPort.h"
 #include "SerialPortInfo.h"
 #include "DriverBase.h"
 #include <functional>
+
 using namespace itas109;
 class SerialListener;
 class SerialDirver : public DriverBase
@@ -21,27 +23,27 @@ public:
               unsigned int readBufferSize = 4096)final;
 
     DriverType type() const override{return this->_type;}
-
-   
+ 
+    //读取串口数据 
     int readData(void *data, int size){
         return _port->readData(data,size);
     }
-
+    //写入串口数据
     int writeData(const void *data, int size){
        return  _port->writeData(data,size);
     }
-
+    //打开串口
     bool open(){
        return  _port->open();
     }
-
+    //关闭串口
     void close(){
         _port->close();
     }
 
 private:
-    CSerialPort *    _port     = nullptr;
-    SerialListener * _listener = nullptr;
+    CSerialPort    *    _port    ;
+    SerialListener *    _listener;
     DriverType  _type ;
 };
 
@@ -51,8 +53,8 @@ public:
     SerialListener(CSerialPort *port,SerialDirver* driver);
     void onReadEvent(const char* portName, unsigned int readBufferLen) override;
 private:
-    CSerialPort  *_port   = nullptr;
-    SerialDirver *_driver = nullptr;
+    CSerialPort  *_port   ;
+    SerialDirver *_driver ;
 };  
 
 #define SERIAL_DRIVER_CLASS(classname)         \

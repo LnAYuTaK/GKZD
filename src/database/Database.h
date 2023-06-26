@@ -57,7 +57,7 @@ private:
     }
     sqlite3 *                   handle;
     std::string                 mFilename; 
-
+    //查询数据回调内部执行
     static int queryCallback(void* data, int argc, char** argv, char** columnNames) 
     {
         queryVector * results = static_cast<queryVector*>(data);

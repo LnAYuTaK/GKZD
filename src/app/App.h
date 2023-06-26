@@ -23,11 +23,9 @@
 #include "FileHelper.h"
 #include "BufferPtr.h"
 #include "Database.h"
-
 //Test def 
 // #define  NETWORK_TEST
 // #define  DATABASE_TEST
-
 class Application
 {
     //单例
@@ -37,14 +35,12 @@ class Application
     using DriverMgrShardPtr  =      std::shared_ptr<DriverManager>;
     using NetWorkMgrShardPtr =      std::shared_ptr<NetWorkManager>;
 public:
-   
     ~Application();
-
-    
+    //资源初始化
     void init();
+    //开启系统任务
     void start();
     //外部接口
-    
     //线程池
     ThreadPoolShardPtr     &      TPool               (){return this->_threadPool;}
     //事件发布订阅管理器
@@ -53,7 +49,6 @@ public:
     DriverMgrShardPtr      &      DriverMgr           (){return this->_driverMgr;}
     //网络通信管理器
     NetWorkMgrShardPtr     &      NetWorkMgr          (){return this->_netWorkMgr;}
-
 private:
     //内部资源
     ThreadPoolShardPtr        _threadPool;

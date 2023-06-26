@@ -39,7 +39,6 @@ public:
 			Reset();
 		}
 	}
-
 	template<size_t S> CBufferPtrT& Copy(const CBufferPtrT<T, S>& other)
 	{
 		if((void*)&other != (void*)this)
