@@ -1,8 +1,8 @@
 #pragma once
 /**
  * @file ThreadPool.h
- * @author your name (you@domain.com)
- * @brief  ThreadPool 
+ * @author LnAYuTaK (807874484@qq.com)
+ * @brief  线程池 
  * @version 0.1
  * @date 2023-06-05
  * 
@@ -16,36 +16,36 @@
 #include <thread>
 #include <utility>
 #include <vector>
-
 #include "SafeQueue.h"
 
 class ThreadPool {
 private:
-  class ThreadWorker {
-  private:
-    int m_id;
-    ThreadPool * m_pool;
-  public:
-    ThreadWorker(ThreadPool * pool, const int id)
-      : m_pool(pool), m_id(id) {
-    }
+  class ThreadWorker 
+  {
+    private:
+      int m_id;
+      ThreadPool * m_pool;
+    public:
+      ThreadWorker(ThreadPool * pool, const int id)
+        : m_pool(pool), m_id(id) {
 
-    void operator()() {
-      std::function<void()> func;
-      bool dequeued;
-      while (!m_pool->m_shutdown) {
-        {
-          std::unique_lock<std::mutex> lock(m_pool->m_conditional_mutex);
-          if (m_pool->m_queue.empty()) {
-            m_pool->m_conditional_lock.wait(lock);
+      }
+      void operator()() {
+        std::function<void()> func;
+        bool dequeued;
+        while (!m_pool->m_shutdown) {
+          {
+            std::unique_lock<std::mutex> lock(m_pool->m_conditional_mutex);
+            if (m_pool->m_queue.empty()) {
+              m_pool->m_conditional_lock.wait(lock);
+            }
+            dequeued = m_pool->m_queue.dequeue(func);
           }
-          dequeued = m_pool->m_queue.dequeue(func);
-        }
-        if (dequeued) {
-          func();
+          if (dequeued) {
+            func();
+          }
         }
       }
-    }
   };
 
   bool m_shutdown;
@@ -54,8 +54,10 @@ private:
   std::mutex m_conditional_mutex;
   std::condition_variable m_conditional_lock;
 public:
+ 
   ThreadPool(const int n_threads)
     : m_threads(std::vector<std::thread>(n_threads)), m_shutdown(false) {
+      this->init();
   }
 
   ThreadPool(const ThreadPool &) = delete;
@@ -63,13 +65,9 @@ public:
 
   ThreadPool & operator=(const ThreadPool &) = delete;
   ThreadPool & operator=(ThreadPool &&) = delete;
+  
 
-  void init() {
-    for (int i = 0; i < m_threads.size(); ++i) {
-      m_threads[i] = std::thread(ThreadWorker(this, i));
-    }
-  }
-
+  //结束关闭所有线程
   void shutdown() {
     m_shutdown = true;
     m_conditional_lock.notify_all();
@@ -80,7 +78,7 @@ public:
       }
     }
   }
-
+  //提交一个线程任务异步执行
   template<typename F, typename...Args>
   auto submit(F&& f, Args&&... args) -> std::future<decltype(f(args...))> {
     std::function<decltype(f(args...))()> func = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
@@ -96,4 +94,12 @@ public:
 
     return task_ptr->get_future();
   }
+
+private:
+  void init() {
+    for (int i = 0; i < m_threads.size(); ++i) {
+      m_threads[i] = std::thread(ThreadWorker(this, i));
+    }
+  }
+
 };

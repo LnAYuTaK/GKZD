@@ -21,6 +21,7 @@ CLOG::CLOG()
 /***********************************************************/
 CLOG::~CLOG()
 {
+  
 }
 /***********************************************************/
 char *CLOG::GetCurrentTime()
@@ -43,28 +44,33 @@ unsigned long long CLOG::GetCurrentThreadId()
   return tid;
 }
 /***********************************************************/
-void CLOG::CLOGPrint(CLOG_LEVEL nLevel, const char *pcFunc, const int &line, const char *fmt, ...)
+constexpr   void CLOG::writeLogLevel(char * buffer,CLOG_LEVEL nLevel)
 {
-  std::lock_guard<std::mutex> lock(_WriteMtx);
-  char buffer[_MxLogBufferSize];
-  memset(buffer, 0, _MxLogBufferSize);
-  char levelBuffer[32];
-  memset(levelBuffer, 0, 32);
   switch (nLevel)
   {
   case CLOG_LEVEL_INFO:
-    sprintf(levelBuffer, "\033[0m\033[1;32m%s\033[0m", "INFO");
+    sprintf(buffer, "\033[0m\033[1;32m%s\033[0m", "INFO");
     break;
   case CLOG_LEVEL_WARNING:
-    sprintf(levelBuffer, "\033[0m\033[1;33m%s\033[0m", "WARING");
+    sprintf( buffer, "\033[0m\033[1;33m%s\033[0m", "WARING");
     break;
   case CLOG_LEVEL_ERROR:
-    sprintf(levelBuffer, "\033[0m\033[1;31m%s\033[0m", "ERROR ");
+    sprintf( buffer, "\033[0m\033[1;31m%s\033[0m", "ERROR ");
     break;
   default:
-    sprintf(levelBuffer, "\033[0m\033[1;34m%s\033[0m", "UNKNOW");
+    sprintf (buffer, "\033[0m\033[1;34m%s\033[0m", "UNKNOW");
     break;
   }
+}
+/***********************************************************/
+void CLOG::CLOGPrint(CLOG_LEVEL nLevel, const char *pcFunc, const int &line, const char *fmt, ...)
+{
+  std::lock_guard<std::mutex> lock(_WriteMtx);
+  char levelBuffer[32];
+  char buffer[_MxLogBufferSize];
+  memset(buffer, 0, _MxLogBufferSize);
+  memset(levelBuffer, 0, 32);
+  writeLogLevel(levelBuffer,nLevel);
   int n = sprintf(buffer, 
                   "[%s]"
                   // "[THREAD:%llu]"
@@ -75,7 +81,6 @@ void CLOG::CLOGPrint(CLOG_LEVEL nLevel, const char *pcFunc, const int &line, con
                   levelBuffer,
                   pcFunc,
                   line);
-
   va_list vap;
   va_start(vap, fmt);
   vsnprintf(buffer + n,_MxLogBufferSize-n, fmt, vap);

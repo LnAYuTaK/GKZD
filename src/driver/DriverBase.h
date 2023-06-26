@@ -1,3 +1,4 @@
+#pragma once
 enum DriverType {
     SerialType, 
     I2cType, 

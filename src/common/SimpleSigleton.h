@@ -48,10 +48,12 @@ typename std::enable_if<!HasShutdown<T>::value>::type CallShutdown(
 #undef DISALLOW_COPY_AND_ASSIGN
 #define UNUSED(param) (void)param
 
+//禁止拷贝构造宏
 #define DISALLOW_COPY_AND_ASSIGN(classname) \
   classname(const classname &) = delete;    \
   classname &operator=(const classname &) = delete;
 
+//单例注册宏 
 #define DECLARE_SINGLETON(classname)                                      \
  public:                                                                  \
   static classname *Instance(bool create_if_needed = true) {              \

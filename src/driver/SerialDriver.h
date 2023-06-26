@@ -1,4 +1,5 @@
 #pragma once 
+
 #include "SerialPort.h"
 #include "SerialPortInfo.h"
 #include "DriverBase.h"
@@ -53,7 +54,6 @@ private:
     CSerialPort  *_port   = nullptr;
     SerialDirver *_driver = nullptr;
 };  
-
 
 #define SERIAL_DRIVER_CLASS(classname)         \
     class classname   :public SerialDirver     \

@@ -1,48 +1,70 @@
+/**
+ * @file App.h
+ * @author LnAYuTaK (807874484@qq.com)
+ * @brief  应用程序Application (全局单例)
+ * @version 0.1
+ * @date 2023-06-26
+ * @copyright Copyright (c) 2023
+ */
 #pragma once 
+//std
 #include <thread>
 #include <chrono>
 #include <memory>
-//std
 #include <iostream>
 #include <string>
 //user
-#include "SimpleSigleton.h"
 #include "CLOG.h"
-#include "NetWorkManager.h"
+#include "SimpleSigleton.h"
 #include "ThreadPool.h"
+#include "NetWorkManager.h"
 #include "DriverManager.h"
 #include "BlockerManager.h"
-class DriverManager;
-class NetWorkManager;
+#include "FileHelper.h"
+#include "BufferPtr.h"
+#include "Database.h"
+
+//Test def 
+// #define  NETWORK_TEST
+// #define  DATABASE_TEST
+
 class Application
 {
-    DISALLOW_COPY_AND_ASSIGN(Application);
-
-    using DriverMgr_Ptr  = std::shared_ptr<DriverManager>;
-    using NetWorkMgr_Ptr = std::shared_ptr<NetWorkManager>;
-    using BlockerMgr_Ptr = std::shared_ptr<BlockerManager>;
-
+    //单例
+    DECLARE_SINGLETON(Application)
+    using ThreadPoolShardPtr =      std::shared_ptr<ThreadPool>;
+    using BlockerMgrShardPtr =      std::shared_ptr<BlockerManager>;
+    using DriverMgrShardPtr  =      std::shared_ptr<DriverManager>;
+    using NetWorkMgrShardPtr =      std::shared_ptr<NetWorkManager>;
 public:
-    Application();
+   
     ~Application();
 
-    void Init();
-    void Start();
-
-    static Application *_app;
-
-   DriverMgr_Ptr &  getDriverMgr  ()  {return this->_driverMgr;}
-   NetWorkMgr_Ptr & getNetWorkMgr ()  {return this->_netWorkMgr;}
-   BlockerMgr_Ptr   getBlockMgr   ()  {return BlockerManager::Instance();}
-   //TUDO
-
-   //ParaMgr_Ptr
+    
+    void init();
+    void start();
+    //外部接口
+    
+    //线程池
+    ThreadPoolShardPtr     &      TPool               (){return this->_threadPool;}
+    //事件发布订阅管理器
+    BlockerMgrShardPtr     &      BlcokerMgr          (){return this->_blockerMgr;}
+    //外设设备管理器
+    DriverMgrShardPtr      &      DriverMgr           (){return this->_driverMgr;}
+    //网络通信管理器
+    NetWorkMgrShardPtr     &      NetWorkMgr          (){return this->_netWorkMgr;}
 
 private:
-   NetWorkMgr_Ptr _netWorkMgr;
-   DriverMgr_Ptr  _driverMgr;
+    //内部资源
+    ThreadPoolShardPtr        _threadPool;
+    BlockerMgrShardPtr        _blockerMgr;
+    NetWorkMgrShardPtr        _netWorkMgr;
+    DriverMgrShardPtr         _driverMgr;
+    //TUDO 数据库模块
+    Database                  _dataBase;
 };
 
+//全局单例接口
 Application * app();
 
 

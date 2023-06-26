@@ -63,7 +63,15 @@ $ cmake --build .
 //编译生成的文件在 CSerialPort/arm_build/lib/  (默认生成动态库如果生成静态库需要增加     -DBUILD_SHARED_LIBS=OFF )  
 //将生成的库文件 放到/GKZD/lib 文件夹下
 ```
-
+ ***Protobuf交叉编译***
+```console
+$ tar -xzvf protobuf-cpp-3.21.12.tar.gz
+$ cd  protobuf-cpp-3.21.12
+$ ./autogen.sh
+$ ./configure --host=arm-linux CC=aarch64-linux-gcc CXX=aarch64-linux-g++ --prefix=/path
+$ make && make install
+$ 生成的库在path
+```
  ***MQTT交叉编译***
 + PAHO MQTT CPP库需要按照顺序编译三个库 依次编译 ***ssl*** ***mqttc*** ***mqttcpp***
 ```console
@@ -179,37 +187,12 @@ testSerial.open();
 testSerial.writeData(data,size)
 ```
 ### 任务分发发布模块(BrokerManager)
-```CPP
-//实现一个标准观察者设计模式
-//使用示例
-typedef struct {
-  int data =10;
-  char msg[20] = "mojap";
-}Data;
-void GasMsgEventHandle1(const std::shared_ptr<Data>& msg_ptr) {  
-  std::cout << "我是处理1"<<std::endl;
-  std::cout << "处理消息a::" <<msg_ptr->data <<std::endl;
-  std::cout << "处理消息b::"<<msg_ptr->msg<< std::endl;
-}
-void GasMsgEventHandle2(const std::shared_ptr<Data>& msg_ptr) {  
-  std::cout << "我是处理2"<<std::endl;
-  std::cout << "处理消息a::" <<msg_ptr->data <<std::endl;
-  std::cout << "处理消息b::"<<msg_ptr->msg<< std::endl;
-}
-int main(int argc, char const *argv[])
-{
-  auto block_mgr = BlockerManager::Instance();
-  //交付给任务中心
-  block_mgr->Subscribe<Data>("GasMsgEvent1",2,"Uart",GasMsgEventHandle1);
-  block_mgr->Subscribe<Data>("GasMsgEvent2",2,"event1handle2",GasMsgEventHandle2);
-  block_mgr->Observe();
-  Data s1{1,"12345"};
-  Data s2{2,"67890"};
-  block_mgr->Publish<Data>("GasMsgEvent1",s1);
-  block_mgr->Publish<Data>("GasMsgEvent2",s2);
-  return 0;
-}
-```
+
+![定义发布数据](./res/readme3.png)
+![开启服务器订阅事件](./res/readme2.png)
+![在网络接收处发布事件](./res/readme4.png)
+![处理事件](./res/readme1.png)
+![测试结果](./res/readme5.png)
 
 ##  **项目SSH端口映射方法**
 

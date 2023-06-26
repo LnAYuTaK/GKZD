@@ -5,10 +5,10 @@ DriverManager::DriverManager(/* args */)
     :_serial1(std::make_shared<Serial1>())
     ,_serial2(std::make_shared<Serial2>())
 {
-
 }
 /***********************************************************************************************/
-DriverManager::~DriverManager(){
+DriverManager::~DriverManager()
+{
 }
 /***********************************************************************************************/
 //Serial1 Handle 
@@ -17,7 +17,6 @@ void Serial1::onReadEvent(const char* portName, unsigned int readBufferLen)
         if (readBufferLen > 0)
         {
             char *data = new char[readBufferLen + 1]; // '\0'
-
             if (data)
             {
                 // read

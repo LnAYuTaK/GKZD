@@ -1,7 +1,7 @@
 /**
  * @file SafeQueue.h
- * @author your name (you@domain.com)
- * @brief 
+ * @author LnAYuTaK (807874484@qq.com)
+ * @brief  //线程安全的队列(通过封装STL Queue实现)
  * @version 0.1
  * @date 2023-06-05
  * 
@@ -12,8 +12,6 @@
 
 #include <mutex>
 #include <queue>
-
-// Thread safe implementation of a Queue using an std::queue
 template <typename T>
 class SafeQueue {
 private:

@@ -4,10 +4,6 @@
 #include "App.h"
 #include "CLOG.h"
 #include "BufferPtr.h"
-
-#define PORT 5351
-#define IP  "192.168.16.115"
-
 EnHandleResult TCPListenerImpl::OnPrepareListen(ITcpServer* pSender, SOCKET soListen)
 {
     return HR_OK;
@@ -33,8 +29,10 @@ EnHandleResult TCPListenerImpl::OnReceive(ITcpServer* pSender, CONNID dwConnID, 
     ITcpPullServer* pServer	= ITcpPullServer::FromS(pSender);
     CBufferPtr buffer(iLength);
     EnFetchResult result = pServer->Fetch(dwConnID, buffer, iLength);
-    CLOG_INFO("%s",buffer.Ptr());
-    pServer->Send(dwConnID,buffer,iLength);
+    //Test
+#ifdef NETWORK_TEST
+    app()->BlcokerMgr()->Publish<CBufferPtr>("Data1",buffer);
+#endif
     return HR_OK;
 }
 /***********************************************************************************************/
@@ -45,12 +43,13 @@ EnHandleResult TCPListenerImpl::OnSend(ITcpServer* pSender, CONNID dwConnID, con
 /***********************************************************************************************/
 EnHandleResult TCPListenerImpl::OnClose(ITcpServer* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode)
 {   
-    CLOG_INFO("%lu: Close",dwConnID);
+    CLOG_INFO("%lu: Client Close",dwConnID);
     return HR_OK;
 }
 /***********************************************************************************************/
 EnHandleResult TCPListenerImpl::OnShutdown(ITcpServer* pSender)
 {
+    CLOG_INFO("%s","Server ShutDown");
     return HR_OK;
 }
 /***********************************************************************************************/
@@ -58,7 +57,6 @@ NetWorkManager::NetWorkManager(/* args */)
     :listener()
     ,server(&listener)
 {
-
 }
 /***********************************************************************************************/
 NetWorkManager::~NetWorkManager()
@@ -67,5 +65,6 @@ NetWorkManager::~NetWorkManager()
     {
         HP_Destroy_TcpPullServer(this->server);
     }
+    
 }
 /***********************************************************************************************/

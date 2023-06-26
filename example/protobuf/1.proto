@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message Image {
+  string name = 1;
+  string name2 = 2 ;
+}

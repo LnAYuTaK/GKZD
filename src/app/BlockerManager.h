@@ -1,23 +1,29 @@
+/**
+ * @file BlockerManager.h
+ * @author LnAYuTaK (807874484@qq.com)
+ * @brief  事件注册发布管理器
+ * @version 0.1
+ * @date 2023-06-26
+ * @copyright Copyright (c) 2023
+ */
 #pragma once
+
 #include <memory>
 #include <mutex>
 #include <string>
 #include <unordered_map>
-
+#include "SimpleSigleton.h"
 #include "Blocker.h"
 
-class BlockerManager {
- public:
-  using BlockerMap =
-      std::unordered_map<std::string, std::shared_ptr<BlockerBase>>;
+class BlockerManager 
+{
+        
+  DISALLOW_COPY_AND_ASSIGN(BlockerManager)
+  using BlockerMap =  std::unordered_map<std::string, std::shared_ptr<BlockerBase>>;
 
+public:
+  BlockerManager();
   virtual ~BlockerManager();
-
-  static const std::shared_ptr<BlockerManager>& Instance() {
-    static auto instance =
-        std::shared_ptr<BlockerManager>(new BlockerManager());
-    return instance;
-  }
 
   template <typename T>
   bool Publish(const std::string& channel_name,
@@ -46,10 +52,6 @@ class BlockerManager {
   void Reset();
 
  private:
-  BlockerManager();
-  BlockerManager(const BlockerManager&) = delete;
-  BlockerManager& operator=(const BlockerManager&) = delete;
-
   BlockerMap blockers_;
   std::mutex blocker_mutex_;
 };

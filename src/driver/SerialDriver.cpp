@@ -12,10 +12,14 @@ SerialDirver::SerialDirver()
 /***********************************************************/
 SerialDirver::~SerialDirver()
 {
-    delete _port;
-    delete _listener;
-    _port =nullptr;
-    _listener = nullptr;
+    if(_port!=nullptr){
+        delete _port; 
+        _port =nullptr;
+    }
+    if(_listener!=nullptr){
+       delete _listener; 
+       _listener = nullptr;
+    }
 }
 /***********************************************************/
 void SerialDirver::init(const char *portName,

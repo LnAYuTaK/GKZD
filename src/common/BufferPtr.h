@@ -1,9 +1,14 @@
+/**
+ * @file BufferPtr.h
+ * @brief 数据缓存区封装
+ * @version 0.1
+ * @date 2023-06-26
+ * @copyright Copyright (c) 2023
+ */
 #pragma once
-
 #include "GlobalDef.h"
 #include <memory.h>
 #include <malloc.h>
-
 template<class T, size_t MAX_CACHE_SIZE = 0>
 class CBufferPtrT
 {

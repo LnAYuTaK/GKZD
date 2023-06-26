@@ -1,6 +1,17 @@
+/**
+ * @file NetWorkManager.h
+ * @author LnAYuTaK (807874484@qq.com)
+ * @brief  网络通信管理器 (管理所有网络服务器客户端等网络接口)
+ * @version 0.1
+ * @date 2023-06-26
+ * @copyright Copyright (c) 2023
+ */
 #pragma once 
+
 #include "HPSocket.h"
 #include "SocketInterface.h"
+#include  "SimpleSigleton.h"
+
 class TCPListenerImpl :public  CTcpPullServerListener
 {
 public:
@@ -15,13 +26,14 @@ public:
 
 class NetWorkManager
 {
+	DISALLOW_COPY_AND_ASSIGN(NetWorkManager)
 public:
 	NetWorkManager(/* args */);
-	~NetWorkManager();
+	virtual~NetWorkManager();
 	CTcpPullServerPtr & Server() {return server;}	
-
+    
 private:
-    TCPListenerImpl  listener;
+    TCPListenerImpl   listener;
 	CTcpPullServerPtr server;
 };
 

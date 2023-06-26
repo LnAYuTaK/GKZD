@@ -35,20 +35,21 @@ public:
     void DisableToFile()      {this->_ToFile     = false;}
     void EnableToTerminal()   {this->_ToTerminal = true;}
     void DisableToTerminal()  {this->_ToTerminal = false;}
-
-   // void SetLevel(CLOG_LEVEL nLevel);
-
-    char* GetCurrentTime();
+    
     void  CLOGPrint(CLOG_LEVEL nLevel,const char* pcFunc, const int& line, const char* fmt, ...);
-    unsigned long long GetCurrentThreadId();
+
 private:
-    std::string      _LogFileName;         //日志文件名
-    bool             _ToFile;              //是否允许写入文件
-    bool             _ToTerminal;          //是否允许控制台
-    CLOG_LEVEL       _LOGLevel;            //日志级别
-    std::mutex       _WriteMtx;            //写锁
-    std::FILE*       _LogFile;             //日志文件
-    int              _MxLogBufferSize;     //最大输出日志长度
+    unsigned long long GetCurrentThreadId();
+    char* GetCurrentTime();
+    constexpr   void writeLogLevel(char * buffer,CLOG_LEVEL nLevel);
+
+    std::string         _LogFileName;       //日志文件名
+    bool                    _ToFile;                          //是否允许写入文件
+    bool                   _ToTerminal;               //是否允许控制台
+    CLOG_LEVEL  _LOGLevel;       //日志级别
+    std::mutex       _WriteMtx;              //写锁
+    std::FILE*         _LogFile;                   //日志文件
+    int                        _MxLogBufferSize;       //最大输出日志长度
 };
 #define CLOG_INFO(fmt, args...)      CLOG::Instance()->CLOGPrint(CLOG_LEVEL_INFO, __FUNCTION__ , __LINE__,fmt,##args)
 #define CLOG_WARNING(fmt,  args...)  CLOG::Instance()->CLOGPrint(CLOG_LEVEL_WARNING,__FUNCTION__ , __LINE__,fmt,##args)
