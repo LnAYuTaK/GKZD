@@ -5,16 +5,16 @@
 #include <sys/time.h>
 #include <sstream>
 #include <ctime>
-#include <cstdio>
 #include <cstdarg>
 #include <memory.h>
+
+#include <chrono>
+#include <iomanip>
 thread_local char _timebuf[64] = {0x00};
 CLOG::CLOG()
     : _ToFile(false)
     , _ToTerminal(true)
-    , _LogFileName(std::string(""))
     , _MxLogBufferSize(256)
-    , _LOGLevel(CLOG_LEVEL_INFO)
 {
   
 }
@@ -24,6 +24,21 @@ CLOG::~CLOG()
   
 }
 /***********************************************************/
+//[2023.06.28-01:31:21]
+std::string CLOG::GetCurrentDateTime()
+{
+    // 获取当前系统时间
+    auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    // 将时间转换为本地时间
+    std::tm* localTime = std::localtime(&time);
+    // 格式化输出
+    std::ostringstream oss;
+    oss << std::put_time(localTime, "%Y.%m.%d-%H:%M:%S");
+    return oss.str();
+}
+/***********************************************************/
+//[2023.06.28-01:31:21]
 char *CLOG::GetCurrentTime()
 {
   time_t t = time(nullptr);
@@ -44,17 +59,27 @@ unsigned long long CLOG::GetCurrentThreadId()
   return tid;
 }
 /***********************************************************/
-constexpr   void CLOG::writeLogLevel(char * buffer,CLOG_LEVEL nLevel)
+std::string CLOG::GetCurrentData()
+{
+  std::time_t t = std::time(nullptr);
+  std::tm tm = *std::localtime(&t);
+  char buffer[9];
+  memZero(buffer,sizeof(buffer)); 
+  std::strftime(buffer, sizeof(buffer), "%Y%m%d", &tm);
+  return std::string(buffer);
+}
+/***********************************************************/
+void CLOG::writeLogLevel(char * buffer,CLOG_LEVEL nLevel)
 {
   switch (nLevel)
   {
-  case CLOG_LEVEL_INFO:
+  case CLOG_LEVEL::CLOG_LEVEL_INFO:
     sprintf(buffer, "\033[0m\033[1;32m%s\033[0m", "INFO");
     break;
-  case CLOG_LEVEL_WARNING:
+  case CLOG_LEVEL::CLOG_LEVEL_WARN:
     sprintf( buffer, "\033[0m\033[1;33m%s\033[0m", "WARING");
     break;
-  case CLOG_LEVEL_ERROR:
+  case CLOG_LEVEL::CLOG_LEVEL_ERROR:
     sprintf( buffer, "\033[0m\033[1;31m%s\033[0m", "ERROR ");
     break;
   default:
@@ -85,16 +110,20 @@ void CLOG::CLOGPrint(CLOG_LEVEL nLevel, const char *pcFunc, const int &line, con
   va_start(vap, fmt);
   vsnprintf(buffer + n,_MxLogBufferSize-n, fmt, vap);
   va_end(vap);
-  // if(_ToFile)
-  // {
-  //   ofstream fout(log()->_LogFileName,ios::app);
-  //   fout<<buffer;
-  //   fout<< "\0\n";
-  //   fout.close();
-  // }
-  if(_ToTerminal)
+  if(_ToFile)
   {
+    std::fstream f;
+    std::string  s = GetCurrentData()+".log";
+    f.open(s, std::fstream::out | std::fstream::app);
+    if(f.is_open())
+    {
+      f <<buffer<<'\n';
+      f.flush();
+      f.close(); 
+    }
     fprintf(stdout,"%s\n",buffer);
     fflush(stdout);
   }
 }
+
+

@@ -12,10 +12,10 @@ Database::Database(const char* apFilename,
 {
     const int ret = sqlite3_open_v2(apFilename, &handle, aFlags, apVfs);
     if (SQLITE_OK == ret){
-       CLOG_INFO("%s","database open success");
+       
     }
     else {
-        CLOG_ERROR("%s","database open fail");
+        
     }
     if (aBusyTimeoutMs > 0)
     {

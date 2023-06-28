@@ -14,43 +14,124 @@
 #include <mutex>
 #include "SimpleSigleton.h"
 #include <cstdio>
-enum CLOG_LEVEL
-{
-    CLOG_LEVEL_INFO,
-    CLOG_LEVEL_WARNING,
-    CLOG_LEVEL_ERROR
-};
+#include "LogStream.h"
+#include <fstream>
 class CLOG
 {
-    DECLARE_SINGLETON(CLOG)  
+  DECLARE_SINGLETON(CLOG)  
 public:
 
-    ~CLOG();
-    //设置当前文件输出文件
-    void EnableToFile(std::string &fileName){ 
-        this->_ToFile = true; 
-        //TODU  Check File Path  
-        this->_LogFileName = std::move(fileName);
+//LEVEL TYPE
+  enum class CLOG_LEVEL
+  {
+    CLOG_LEVEL_DEBUG,
+    CLOG_LEVEL_INFO,
+    CLOG_LEVEL_WARN,
+    CLOG_LEVEL_ERROR,
+  };
+//LEVEL NAME ARRAY
+  static constexpr const char* LogLevelName[4] =
+  {
+    " DEBUG",
+    " INFO ",
+    " WARN ",
+    " ERROR"
+  };
+  static constexpr const char* LogLevelNameColor[4] =
+  {
+    " \033[0m\033[1;36mDEBUG\033[0m ",
+    " \033[0m\033[1;32mINFO\033[0m  ",
+    " \033[0m\033[1;33mWARN\033[0m  ",
+    " \033[0m\033[1;31mERROR\033[0m "
+  };
+
+  ~CLOG();  
+
+  static unsigned long long GetCurrentThreadId();
+  
+  static std::string GetCurrentData();
+  
+  static std::string GetCurrentDateTime();
+
+  static char* GetCurrentTime();
+//TUDO
+  void  CLOGPrint(CLOG_LEVEL nLevel,const char* pcFunc, const int& line, const char* fmt, ...);
+//To File
+  inline bool isToFile(){
+    return _ToFile;
+  }
+
+  inline void setToFile(bool select){
+      this->_ToFile = select;
+  }
+//
+  class LogMsg
+  {
+  public:
+    //DEBUG INFO 
+    LogMsg(CLOG_LEVEL nLevel,const char* pcFunc,const int& line)
+    {
+      std::lock_guard<std::mutex> lock(_mtx);
+      _stream << "["<< CLOG::GetCurrentDateTime()  << "]"
+              << "["<< LogLevelName[(int)nLevel]   << "]" 
+              << "["<< pcFunc                      << "]"
+              << "["<< line                        << "]"; 
     }
-    void DisableToFile()      {this->_ToFile     = false;}
-    void EnableToTerminal()   {this->_ToTerminal = true;}
-    void DisableToTerminal()  {this->_ToTerminal = false;}
-    
-    void  CLOGPrint(CLOG_LEVEL nLevel,const char* pcFunc, const int& line, const char* fmt, ...);
+    //WARN ERROR
+    LogMsg(CLOG_LEVEL nLevel,const char* pcFunc,const char *file,const int& line)
+    {
+      std::lock_guard<std::mutex> lock(_mtx);
+      _stream << "["<< CLOG::GetCurrentDateTime()  << "]"
+              << "["<< LogLevelName[(int)nLevel]   << "]" 
+              << "["<< pcFunc                      << "]"
+              << "["<< file                        << "]"
+              << "["<< line                        << "]"; 
+    }
+    ~LogMsg()
+    {
+      std::lock_guard<std::mutex> lock(_mtx);
+      _stream << '\n';
+      if(CLOG::Instance()->isToFile())
+      {
+        std::fstream f;
+        std::string  s = CLOG::GetCurrentData()+".log";
+        f.open(s, std::fstream::out | std::fstream::app);
+        f <<_stream.buffer().data();
+        if(f.is_open())
+        {
+          f.flush();
+          f.close(); 
+        }
+      }
+      fprintf(stdout,"%s",_stream.buffer().data());
+      fflush(stdout);
+    }
+    LogStream & stream()
+    {
+      return _stream;
+    }
+  private:  
+    std::mutex _mtx; 
+    LogStream _stream;
+  };
 
 private:
-    unsigned long long GetCurrentThreadId();
-    char* GetCurrentTime();
-    constexpr   void writeLogLevel(char * buffer,CLOG_LEVEL nLevel);
-
-    std::string         _LogFileName;       //日志文件名
-    bool                    _ToFile;                          //是否允许写入文件
-    bool                   _ToTerminal;               //是否允许控制台
-    CLOG_LEVEL  _LOGLevel;       //日志级别
-    std::mutex       _WriteMtx;              //写锁
-    std::FILE*         _LogFile;                   //日志文件
-    int                        _MxLogBufferSize;       //最大输出日志长度
+//Tudo
+    void writeLogLevel(char * buffer,CLOG_LEVEL nLevel);
+//-------------------------------
+    std::string        _LogFileName;       //日志文件名
+    bool               _ToFile;            //是否允许写入文件
+    bool               _ToTerminal;        //是否允许控制台
+    std::mutex         _WriteMtx;          //写锁
+    int                _MxLogBufferSize;   //最大输出日志长度
 };
-#define CLOG_INFO(fmt, args...)      CLOG::Instance()->CLOGPrint(CLOG_LEVEL_INFO, __FUNCTION__ , __LINE__,fmt,##args)
-#define CLOG_WARNING(fmt,  args...)  CLOG::Instance()->CLOGPrint(CLOG_LEVEL_WARNING,__FUNCTION__ , __LINE__,fmt,##args)
-#define CLOG_ERROR(fmt,  args...)    CLOG::Instance()->CLOGPrint(CLOG_LEVEL_ERROR, __FUNCTION__ , __LINE__,fmt,##args)
+
+//C Style LOG
+#define CLOG_INFO_FMT(fmt, args...)   CLOG::Instance()->CLOGPrint(CLOG_LEVEL_INFO, __FUNCTION__ , __LINE__,fmt,##args)
+#define CLOG_WARN_FMT(fmt,  args...)  CLOG::Instance()->CLOGPrint(CLOG_LEVEL_WARNING,__FUNCTION__ , __LINE__,fmt,##args)
+#define CLOG_ERROR_FMT(fmt,  args...) CLOG::Instance()->CLOGPrint(CLOG_LEVEL_ERROR, __FUNCTION__ , __LINE__,fmt,##args)
+//CPP Style LOG
+#define CLOG_DEBUG()  CLOG::LogMsg(CLOG::CLOG_LEVEL::CLOG_LEVEL_DEBUG, __FUNCTION__ , __LINE__).stream()   
+#define CLOG_INFO()   CLOG::LogMsg(CLOG::CLOG_LEVEL::CLOG_LEVEL_INFO,  __FUNCTION__ , __LINE__).stream()   
+#define CLOG_WARN()   CLOG::LogMsg(CLOG::CLOG_LEVEL::CLOG_LEVEL_WARN,  __FUNCTION__ , __LINE__).stream()  
+#define CLOG_ERROR()  CLOG::LogMsg(CLOG::CLOG_LEVEL::CLOG_LEVEL_ERROR, __FUNCTION__ , __LINE__).stream()                                                                                        

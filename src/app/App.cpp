@@ -40,11 +40,9 @@ void Handle(const std::shared_ptr<CBufferPtr>&msg)
 void Application::init(/* args */)
 {
    //初始化所有的事件订阅发布
-   CLOG_INFO("%s","APP Init");
    #ifdef NETWORK_TEST 
    if(app()->NetWorkMgr()->Server()->Start("192.168.16.232",2456))
    {
-      CLOG_INFO("%s","Start TCP OK");
    }
    app()->BlcokerMgr()->Subscribe<CBufferPtr>("Data1",1,"Handle",Handle);
    #endif
@@ -52,12 +50,10 @@ void Application::init(/* args */)
 /***********************************************************/
 void Application::start()
 {
-   CLOG_INFO("%s","App Start");
+
    #ifdef  DATABASE_TEST
    int ret = _dataBase.exec("CREATE TABLE IF NOT EXISTS table1 (test1 INTEGER PRIMARY KEY UNIQUE,test2 INTEGER UNIQUE);");
-   CLOG_INFO("dataBase return %d",ret);
    ret = _dataBase.exec("INSERT INTO table1 (test1, test2) VALUES (1, 30);");
-   CLOG_INFO("dataBase return %d",ret);
    #endif
 }
 /***********************************************************/
