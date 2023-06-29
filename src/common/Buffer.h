@@ -11,8 +11,6 @@ public:
     void put(const T &data)
     {
         *back = data;
-
-        // Swap middle buffer with back buffer
         std::shared_ptr<T> previous = std::atomic_exchange(&middle, back);
         std::atomic_store(&back, previous);
 

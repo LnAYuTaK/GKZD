@@ -4,9 +4,11 @@ using std::string;
 using std::vector;
 
 //获取文件内容
-bool FileHelper::getContent(const std::string &file_name, std::string *content) {
+bool FileHelper::getContent(const std::string &file_name, std::string *content) 
+{
   std::ifstream fin(file_name);
-  if (!fin) {
+  if (!fin) 
+  {
     return false;
   }
   std::stringstream str_stream;
@@ -19,37 +21,44 @@ bool FileHelper::getContent(const std::string &file_name, std::string *content) 
 std::string FileHelper::getAbsolutePath(const std::string &prefix,
                             const std::string &relative_path) 
 {
-  if (relative_path.empty()) {
+  if (relative_path.empty()) 
+  {
     return prefix;
   }
-  if (prefix.empty() || relative_path.front() == '/') {
+  if (prefix.empty() || relative_path.front() == '/') 
+  {
     return relative_path;
   }
-
-  if (prefix.back() == '/') {
+  if (prefix.back() == '/') 
+  {
     return prefix + relative_path;
   }
   return prefix + "/" + relative_path;
 }
 /***********************************************************************************************/
 //判断路径是否存在
-bool FileHelper::pathExists(const std::string &path) {
+bool FileHelper::pathExists(const std::string &path) 
+{
   struct stat info;
   return stat(path.c_str(), &info) == 0;
 }
 /***********************************************************************************************/
 //判断文件夹是否存在
-bool FileHelper::directoryExists(const std::string &directory_path) {
+bool FileHelper::directoryExists(const std::string &directory_path) 
+{
   struct stat info;
   return stat(directory_path.c_str(), &info) == 0 && (info.st_mode & S_IFDIR);
 }
 /***********************************************************************************************/
 //通配符包含
-std::vector<std::string> FileHelper::globs(const std::string &pattern) {
+std::vector<std::string> FileHelper::globs(const std::string &pattern) 
+{
   glob_t globs = {};
   std::vector<std::string> results;
-  if (glob(pattern.c_str(), GLOB_TILDE, nullptr, &globs) == 0) {
-    for (size_t i = 0; i < globs.gl_pathc; ++i) {
+  if (glob(pattern.c_str(), GLOB_TILDE, nullptr, &globs) == 0) 
+  {
+    for (size_t i = 0; i < globs.gl_pathc; ++i) 
+    {
       results.emplace_back(globs.gl_pathv[i]);
     }
   }
@@ -58,9 +67,11 @@ std::vector<std::string> FileHelper::globs(const std::string &pattern) {
 }
 /***********************************************************************************************/
 //拷贝文件
-bool FileHelper::copyFile(const std::string &from, const std::string &to) {
+bool FileHelper::copyFile(const std::string &from, const std::string &to) 
+{
   std::ifstream src(from, std::ios::binary);
-  if (!src) {
+  if (!src) 
+  {
     std::string command = "cp -r " + from + " " + to;
     const int ret = std::system(command.c_str());
     if (ret == 0) {
@@ -70,7 +81,8 @@ bool FileHelper::copyFile(const std::string &from, const std::string &to) {
     }
   }
   std::ofstream dst(to, std::ios::binary);
-  if (!dst) {
+  if (!dst) 
+  {
     return false;
   }
 
@@ -79,22 +91,27 @@ bool FileHelper::copyFile(const std::string &from, const std::string &to) {
 }
 /***********************************************************************************************/
 //拷贝文件夹
-bool FileHelper::copyDir(const std::string &from, const std::string &to) {
+bool FileHelper::copyDir(const std::string &from, const std::string &to) 
+{
   DIR *directory = opendir(from.c_str());
-  if (directory == nullptr) {
+  if (directory == nullptr) 
+  {
     return false;
   }
   bool ret = true;
-  if (ensureDirectory(to)) {
+  if (ensureDirectory(to)) 
+  {
     struct dirent *entry;
     while ((entry = readdir(directory)) != nullptr) {
       // skip directory_path/. and directory_path/..
-      if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) {
+      if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) 
+      {
         continue;
       }
       const std::string sub_path_from = from + "/" + entry->d_name;
       const std::string sub_path_to = to + "/" + entry->d_name;
-      if (entry->d_type == DT_DIR) {
+      if (entry->d_type == DT_DIR) 
+      {
         ret &= copyDir(sub_path_from, sub_path_to);
       } else {
         ret &= copyFile(sub_path_from, sub_path_to);
@@ -107,11 +124,13 @@ bool FileHelper::copyDir(const std::string &from, const std::string &to) {
   return ret;
 }
 /***********************************************************************************************/
-bool FileHelper::copy(const std::string &from, const std::string &to) {
+bool FileHelper::copy(const std::string &from, const std::string &to) 
+{
   return directoryExists(from) ? copyDir(from, to) : copyFile(from, to);
 }
 /***********************************************************************************************/
-bool FileHelper::ensureDirectory(const std::string &directory_path) {
+bool FileHelper::ensureDirectory(const std::string &directory_path) 
+{
   std::string path = directory_path;
   for (size_t i = 1; i < directory_path.size(); ++i) {
     if (directory_path[i] == '/') {
@@ -134,7 +153,8 @@ bool FileHelper::ensureDirectory(const std::string &directory_path) {
   return true;
 }
 /***********************************************************************************************/
-bool FileHelper::removeAllFiles(const std::string &directory_path) {
+bool FileHelper::removeAllFiles(const std::string &directory_path) 
+{
   DIR *directory = opendir(directory_path.c_str());
   if (directory == nullptr) {
     return false;
@@ -156,7 +176,8 @@ bool FileHelper::removeAllFiles(const std::string &directory_path) {
 }
 /***********************************************************************************************/
 std::vector<std::string> FileHelper::listSubPaths(const std::string &directory_path,
-                                      const unsigned char d_type) {
+                                      const unsigned char d_type) 
+{
   std::vector<std::string> result;
   DIR *directory = opendir(directory_path.c_str());
   if (directory == nullptr) {
@@ -177,7 +198,8 @@ std::vector<std::string> FileHelper::listSubPaths(const std::string &directory_p
 /**
  * file
 */
-std::string FileHelper::getFileName(const std::string &path, const bool remove_extension) {
+std::string FileHelper::getFileName(const std::string &path, const bool remove_extension) 
+{
   std::string::size_type start = path.rfind('/');
   if (start == std::string::npos) {
     start = 0;
@@ -196,7 +218,8 @@ std::string FileHelper::getFileName(const std::string &path, const bool remove_e
 }
 /***********************************************************************************************/
 //获取当前路径
-std::string FileHelper::getCurrentPath() {
+std::string FileHelper::getCurrentPath() 
+{
   char tmp[PATH_MAX];
   return getcwd(tmp, sizeof(tmp)) ? std::string(tmp) : std::string("");
 }
@@ -217,7 +240,8 @@ bool FileHelper::getType(const string &filename, FileType *type)
   return true;
 }
 /***********************************************************************************************/
-bool FileHelper::deleteFile(const string &filename) {
+bool FileHelper::deleteFile(const string &filename) 
+{
   if (!pathExists(filename)) {
     return true;
   }

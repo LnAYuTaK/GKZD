@@ -1,7 +1,7 @@
 /**
  * @file SafeQueue.h
  * @author LnAYuTaK (807874484@qq.com)
- * @brief  //线程安全的队列(通过封装STL Queue实现)
+ * @brief  线程安全的队列(通过封装STL Queue实现)
  * @version 0.1
  * @date 2023-06-05
  * 

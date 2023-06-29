@@ -21,9 +21,19 @@
 #include "DriverManager.h"
 #include "BlockerManager.h"
 #include "FileHelper.h"
+#include "Bytes.h"
 #include "Database.h"
 //Test def 
-// #define  NETWORK_TEST
+#define  NETWORK_TEST
+
+#ifdef NETWORK_TEST
+#define CLIENT_IP "192.168.16.231"
+#define SERVER_IP "192.168.16.232"
+#define PORT   2345
+#endif
+
+
+//#define  CLOG_TEST
 // #define  DATABASE_TEST
 class Application
 {
@@ -41,13 +51,13 @@ public:
     void start();
     //外部接口
     //线程池
-    ThreadPoolShardPtr     &      TPool               (){return this->_threadPool;}
+    ThreadPoolShardPtr     &      TPool        (){return this->_threadPool;}
     //事件发布订阅管理器
-    BlockerMgrShardPtr     &      BlcokerMgr          (){return this->_blockerMgr;}
+    BlockerMgrShardPtr     &      BlcokerMgr   (){return this->_blockerMgr;}
     //外设设备管理器
-    DriverMgrShardPtr      &      DriverMgr           (){return this->_driverMgr;}
+    DriverMgrShardPtr      &      DriverMgr    (){return this->_driverMgr;}
     //网络通信管理器
-    NetWorkMgrShardPtr     &      NetWorkMgr          (){return this->_netWorkMgr;}
+    NetWorkMgrShardPtr     &      NetWorkMgr   (){return this->_netWorkMgr;}
 private:
     //内部资源
     ThreadPoolShardPtr        _threadPool;
@@ -55,7 +65,9 @@ private:
     NetWorkMgrShardPtr        _netWorkMgr;
     DriverMgrShardPtr         _driverMgr;
     //TUDO 数据库模块
+    #ifdef DATABASE_TEST
     Database                  _dataBase;
+    #endif
 };
 
 //全局单例接口

@@ -21,7 +21,6 @@ class CLOG
   DECLARE_SINGLETON(CLOG)  
 public:
 
-//LEVEL TYPE
   enum class CLOG_LEVEL
   {
     CLOG_LEVEL_DEBUG,
@@ -29,7 +28,7 @@ public:
     CLOG_LEVEL_WARN,
     CLOG_LEVEL_ERROR,
   };
-//LEVEL NAME ARRAY
+
   static constexpr const char* LogLevelName[4] =
   {
     " DEBUG",
@@ -90,20 +89,19 @@ public:
     ~LogMsg()
     {
       std::lock_guard<std::mutex> lock(_mtx);
-      _stream << '\n';
       if(CLOG::Instance()->isToFile())
       {
         std::fstream f;
         std::string  s = CLOG::GetCurrentData()+".log";
         f.open(s, std::fstream::out | std::fstream::app);
-        f <<_stream.buffer().data();
+        f <<_stream.buffer().data()<<std::endl;
         if(f.is_open())
         {
           f.flush();
           f.close(); 
         }
       }
-      fprintf(stdout,"%s",_stream.buffer().data());
+      fprintf(stdout,"%s\n",_stream.buffer().data());
       fflush(stdout);
     }
     LogStream & stream()
@@ -127,9 +125,9 @@ private:
 };
 
 //C Style LOG
-#define CLOG_INFO_FMT(fmt, args...)   CLOG::Instance()->CLOGPrint(CLOG_LEVEL_INFO, __FUNCTION__ , __LINE__,fmt,##args)
-#define CLOG_WARN_FMT(fmt,  args...)  CLOG::Instance()->CLOGPrint(CLOG_LEVEL_WARNING,__FUNCTION__ , __LINE__,fmt,##args)
-#define CLOG_ERROR_FMT(fmt,  args...) CLOG::Instance()->CLOGPrint(CLOG_LEVEL_ERROR, __FUNCTION__ , __LINE__,fmt,##args)
+#define CLOG_INFO_FMT(fmt, args...)   CLOG::Instance()->CLOGPrint(CLOG::CLOG_LEVEL::CLOG_LEVEL_INFO, __FUNCTION__ , __LINE__,fmt,##args)
+#define CLOG_WARN_FMT(fmt,  args...)  CLOG::Instance()->CLOGPrint(CLOG::CLOG_LEVEL::CLOG_LEVEL_WARNING,__FUNCTION__ , __LINE__,fmt,##args)
+#define CLOG_ERROR_FMT(fmt,  args...) CLOG::Instance()->CLOGPrint(CLOG::CLOG_LEVEL::CLOG_LEVEL_ERROR, __FUNCTION__ , __LINE__,fmt,##args)
 //CPP Style LOG
 #define CLOG_DEBUG()  CLOG::LogMsg(CLOG::CLOG_LEVEL::CLOG_LEVEL_DEBUG, __FUNCTION__ , __LINE__).stream()   
 #define CLOG_INFO()   CLOG::LogMsg(CLOG::CLOG_LEVEL::CLOG_LEVEL_INFO,  __FUNCTION__ , __LINE__).stream()   

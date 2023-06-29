@@ -2,12 +2,13 @@
 // Efficient Integer to String Conversions, by Matthew Wilson.
 template class StreamBuffer<kSmallBuffer>;
 template class StreamBuffer<kLargeBuffer>;
+
 template <typename T>
 void LogStream::formatInteger(T v)
 {
   if (buffer_.avail() >= kMaxNumericSize)
   {
-    size_t len = convert(buffer_.current(), v);
+    size_t len = Utils::convert(buffer_.current(), v);
     buffer_.add(len);
   }
 }
@@ -74,7 +75,7 @@ LogStream &LogStream::operator<<(const void *p)
     char *buf = buffer_.current();
     buf[0] = '0';
     buf[1] = 'x';
-    size_t len = convertHex(buf + 2, v);
+    size_t len = Utils::convertHex(buf + 2, v);
     buffer_.add(len + 2);
   }
   return *this;

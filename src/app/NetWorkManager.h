@@ -12,16 +12,58 @@
 #include "SocketInterface.h"
 #include  "SimpleSigleton.h"
 
-class TCPListenerImpl :public  CTcpPullServerListener
+class TCPServerListener :public  CTcpPullServerListener
 {
 public:
-	virtual EnHandleResult OnPrepareListen(ITcpServer* pSender, SOCKET soListen);
-	virtual EnHandleResult OnAccept(ITcpServer* pSender, CONNID dwConnID, UINT_PTR soClient);
-	virtual EnHandleResult OnHandShake(ITcpServer* pSender, CONNID dwConnID);
-	virtual EnHandleResult OnReceive(ITcpServer* pSender, CONNID dwConnID, int iLength);
-	virtual EnHandleResult OnSend(ITcpServer* pSender, CONNID dwConnID, const BYTE* pData, int iLength);
-	virtual EnHandleResult OnClose(ITcpServer* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode);
-	virtual EnHandleResult OnShutdown(ITcpServer* pSender);
+	virtual EnHandleResult OnPrepareListen(ITcpServer* pSender, SOCKET soListen)override;
+
+	virtual EnHandleResult OnAccept(ITcpServer* pSender, 
+									CONNID dwConnID, 
+									UINT_PTR soClient)override;
+
+	virtual EnHandleResult OnHandShake(ITcpServer* pSender, CONNID dwConnID)override;
+
+	virtual EnHandleResult OnReceive(ITcpServer* pSender, 
+										CONNID dwConnID, 
+										int iLength)override;
+
+	virtual EnHandleResult OnSend(ITcpServer* pSender, 
+									CONNID dwConnID, 
+									const BYTE* pData, 
+									int iLength)override;
+
+	virtual EnHandleResult OnClose(ITcpServer* pSender, 
+									CONNID dwConnID, 
+									EnSocketOperation enOperation, 
+									int iErrorCode)override;
+
+	virtual EnHandleResult OnShutdown(ITcpServer* pSender)override;
+};
+
+class TCPClientListener :public  CTcpPullClientListener
+{
+public:
+	virtual EnHandleResult OnPrepareConnect(ITcpClient* pSender, 
+											CONNID dwConnID, 
+											SOCKET socket)override;
+
+	virtual EnHandleResult OnConnect(ITcpClient* pSender, CONNID dwConnID)override;
+
+	virtual EnHandleResult OnHandShake(ITcpClient* pSender, CONNID dwConnID)override;
+
+	virtual EnHandleResult OnReceive(ITcpClient* pSender, 
+										CONNID dwConnID, 
+										int iLength)override;
+
+	virtual EnHandleResult OnSend(ITcpClient* pSender, 
+									CONNID dwConnID, 
+									const BYTE* pData, 
+									int iLength)override;
+
+	virtual EnHandleResult OnClose(ITcpClient* pSender, 
+										CONNID dwConnID, 
+										EnSocketOperation enOperation, 
+										int iErrorCode)override;
 };
 
 class NetWorkManager
@@ -30,11 +72,16 @@ class NetWorkManager
 public:
 	NetWorkManager(/* args */);
 	virtual~NetWorkManager();
-	CTcpPullServerPtr & Server() {return server;}	
-    
+	CTcpPullServerPtr & Server() {return _tcpServer;}
+	CTcpPullClientPtr & Client() {return _tcpClient;}	
 private:
-    TCPListenerImpl   listener;
-	CTcpPullServerPtr server;
+//CLient
+	TCPClientListener   _clisterner;
+	CTcpPullClientPtr   _tcpClient;
+//Server
+    TCPServerListener   _slistener;
+	CTcpPullServerPtr   _tcpServer;
+	
 };
 
 

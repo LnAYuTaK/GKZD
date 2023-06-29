@@ -12,7 +12,7 @@
 #include <iomanip>
 thread_local char _timebuf[64] = {0x00};
 CLOG::CLOG()
-    : _ToFile(false)
+    : _ToFile(true)
     , _ToTerminal(true)
     , _MxLogBufferSize(256)
 {
@@ -64,7 +64,7 @@ std::string CLOG::GetCurrentData()
   std::time_t t = std::time(nullptr);
   std::tm tm = *std::localtime(&t);
   char buffer[9];
-  memZero(buffer,sizeof(buffer)); 
+  Utils::memZero(buffer,sizeof(buffer)); 
   std::strftime(buffer, sizeof(buffer), "%Y%m%d", &tm);
   return std::string(buffer);
 }
@@ -74,16 +74,16 @@ void CLOG::writeLogLevel(char * buffer,CLOG_LEVEL nLevel)
   switch (nLevel)
   {
   case CLOG_LEVEL::CLOG_LEVEL_INFO:
-    sprintf(buffer, "\033[0m\033[1;32m%s\033[0m", "INFO");
+    sprintf(buffer, "%s", " INFO ");
     break;
   case CLOG_LEVEL::CLOG_LEVEL_WARN:
-    sprintf( buffer, "\033[0m\033[1;33m%s\033[0m", "WARING");
+    sprintf( buffer, "%s", " WARN ");
     break;
   case CLOG_LEVEL::CLOG_LEVEL_ERROR:
-    sprintf( buffer, "\033[0m\033[1;31m%s\033[0m", "ERROR ");
+    sprintf( buffer, "%s", " ERROR");
     break;
   default:
-    sprintf (buffer, "\033[0m\033[1;34m%s\033[0m", "UNKNOW");
+    sprintf (buffer, "%s", "UNKNOW");
     break;
   }
 }
@@ -100,7 +100,7 @@ void CLOG::CLOGPrint(CLOG_LEVEL nLevel, const char *pcFunc, const int &line, con
                   "[%s]"
                   // "[THREAD:%llu]"
                   "[%s]"
-                  "[%s] [%d] ",
+                  "[%s][%d]",
                   GetCurrentTime(),
                   // GetCurrentThreadId(),
                   levelBuffer,

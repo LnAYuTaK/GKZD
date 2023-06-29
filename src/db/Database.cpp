@@ -11,10 +11,12 @@ Database::Database(const char* apFilename,
                    ,handle(NULL)
 {
     const int ret = sqlite3_open_v2(apFilename, &handle, aFlags, apVfs);
-    if (SQLITE_OK == ret){
+    if (SQLITE_OK == ret)
+    {
        
     }
-    else {
+    else 
+    {
         
     }
     if (aBusyTimeoutMs > 0)

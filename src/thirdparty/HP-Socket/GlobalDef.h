@@ -68,7 +68,6 @@ typedef IID						FD, HANDLE, SOCKET;
 typedef INT						LRESULT, HRESULT;
 
 
-
 // typedef LLONG					__time64_t;
 typedef INT						__time32_t;
 

@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include "Units.h"
+#include "Utils.h"
 #include "SimpleSigleton.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ class StreamBuffer
   void append(const char* /*restrict*/ buf, size_t len)
   {
 
-    if (implicit_cast<size_t>(avail()) > len)
+    if (Utils::implicit_cast<size_t>(avail()) > len)
     {
       memcpy(cur_, buf, len);
       cur_ += len;
@@ -35,7 +35,7 @@ class StreamBuffer
   int avail() const { return static_cast<int>(end() - cur_); }
   void add(size_t len) { cur_ += len; }
   void reset() { cur_ = data_; }
-  void bzero() { memZero(data_, sizeof data_); }
+  void bzero() { Utils::memZero(data_, sizeof data_); }
   string toString() const { return string(data_, length()); }
  private:
   const char* end() const { return data_ + sizeof data_; }
@@ -44,12 +44,12 @@ class StreamBuffer
   char* cur_;
 };
 
-
 class LogStream 
 {
   using Self   =  LogStream;
   using Buffer =  StreamBuffer<kSmallBuffer>; 
 public:
+
   Self& operator<<(bool v);
   Self& operator<<(short);
   Self& operator<<(unsigned short);

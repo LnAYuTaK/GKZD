@@ -3,12 +3,14 @@
 #include "NetWorkManager.h"
 #include "App.h"
 #include "CLOG.h"
-EnHandleResult TCPListenerImpl::OnPrepareListen(ITcpServer* pSender, SOCKET soListen)
+EnHandleResult TCPServerListener ::OnPrepareListen(ITcpServer* pSender, SOCKET soListen)
 {
     return HR_OK;
 }
 /***********************************************************************************************/
-EnHandleResult TCPListenerImpl::OnAccept(ITcpServer* pSender, CONNID dwConnID, UINT_PTR soClient)
+EnHandleResult TCPServerListener ::OnAccept(ITcpServer* pSender, 
+                                            CONNID dwConnID, 
+                                            UINT_PTR soClient)
 {
     TCHAR szAddress[100];
     int iAddressLen = sizeof(szAddress) / sizeof(TCHAR);
@@ -17,46 +19,102 @@ EnHandleResult TCPListenerImpl::OnAccept(ITcpServer* pSender, CONNID dwConnID, U
     return HR_OK;
 }
 /***********************************************************************************************/
-EnHandleResult TCPListenerImpl::OnHandShake(ITcpServer* pSender, CONNID dwConnID)
+EnHandleResult TCPServerListener ::OnHandShake(ITcpServer* pSender, CONNID dwConnID)
 {
     return HR_OK;
 }
 /***********************************************************************************************/
-EnHandleResult TCPListenerImpl::OnReceive(ITcpServer* pSender, CONNID dwConnID, int iLength)
+EnHandleResult TCPServerListener ::OnReceive(ITcpServer* pSender, 
+                                                CONNID dwConnID, 
+                                                int iLength)
 {
-    //Test
+    Bytes buffer(iLength);
+    app()->NetWorkMgr()->Server()->Fetch(dwConnID,buffer.ptr(),iLength);
+    app()->BlcokerMgr()->Publish<Bytes>("TCPSever",buffer);
     return HR_OK;
 }
 /***********************************************************************************************/
-EnHandleResult TCPListenerImpl::OnSend(ITcpServer* pSender, CONNID dwConnID, const BYTE* pData, int iLength)
+EnHandleResult TCPServerListener ::OnSend(ITcpServer* pSender, 
+                                            CONNID dwConnID, 
+                                            const BYTE* pData, 
+                                            int iLength)
 {
     return HR_OK;
 }
 /***********************************************************************************************/
-EnHandleResult TCPListenerImpl::OnClose(ITcpServer* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode)
+EnHandleResult TCPServerListener ::OnClose(ITcpServer* pSender, 
+                                            CONNID dwConnID, 
+                                            EnSocketOperation enOperation, 
+                                            int iErrorCode)
 {   
 
     return HR_OK;
 }
 /***********************************************************************************************/
-EnHandleResult TCPListenerImpl::OnShutdown(ITcpServer* pSender)
+EnHandleResult TCPServerListener ::OnShutdown(ITcpServer* pSender)
 {
  
     return HR_OK;
 }
 /***********************************************************************************************/
-NetWorkManager::NetWorkManager(/* args */)
-    :listener()
-    ,server(&listener)
+EnHandleResult TCPClientListener::OnPrepareConnect(ITcpClient* pSender,
+                                                    CONNID dwConnID, 
+                                                    SOCKET socket ) 
 {
+
+    return HR_OK;
+}
+/***********************************************************************************************/
+EnHandleResult TCPClientListener::OnConnect(ITcpClient* pSender, CONNID dwConnID)
+{
+    CLOG_INFO()<< "TCP Client Connect";
+    return HR_OK;
+}
+/***********************************************************************************************/
+EnHandleResult TCPClientListener::OnHandShake(ITcpClient* pSender, CONNID dwConnID)
+{
+
+    return HR_OK;
+}
+/***********************************************************************************************/
+EnHandleResult TCPClientListener::OnReceive(ITcpClient* pSender, 
+                                            CONNID dwConnID, 
+                                            int iLength)
+{
+
+    Bytes buffer(iLength);
+    app()->NetWorkMgr()->Client()->Fetch(buffer.ptr(),iLength);
+    app()->BlcokerMgr()->Publish<Bytes>("TCPClient",buffer);
+    return HR_OK;
+}
+
+/***********************************************************************************************/
+EnHandleResult TCPClientListener::OnSend(ITcpClient* pSender, 
+									CONNID dwConnID, 
+									const BYTE* pData, 
+									int iLength)
+{
+    return HR_OK;
+}
+/***********************************************************************************************/
+EnHandleResult TCPClientListener::OnClose(ITcpClient* pSender, 
+						CONNID dwConnID, 
+					    EnSocketOperation enOperation, 
+					    int iErrorCode)
+{
+    return HR_OK;
+}
+/***********************************************************************************************/
+NetWorkManager::NetWorkManager(/* args */)
+    :_tcpServer(&_slistener)
+    ,_tcpClient(&_clisterner)
+{
+
 }
 /***********************************************************************************************/
 NetWorkManager::~NetWorkManager()
 {
-    if(server!= nullptr)
-    {
-        HP_Destroy_TcpPullServer(this->server);
-    }
-    
+    HP_Destroy_TcpPullServer(this->_tcpServer);
+    HP_Destroy_TcpPullClient(this->_tcpClient);
 }
 /***********************************************************************************************/
