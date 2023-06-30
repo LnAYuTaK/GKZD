@@ -14,7 +14,7 @@
 class Utils
 {
 public:
-  static const char digits[];
+  static const char  digits[];
   static const char* zero;
   static const  char digitsHex[];
 

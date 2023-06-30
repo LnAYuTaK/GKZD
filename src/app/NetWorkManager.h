@@ -10,7 +10,9 @@
 
 #include "HPSocket.h"
 #include "SocketInterface.h"
-#include  "SimpleSigleton.h"
+#include "SimpleSigleton.h"
+#include "MqttClient.h"
+#include "CLOG.h"
 
 class TCPServerListener :public  CTcpPullServerListener
 {
@@ -72,9 +74,11 @@ class NetWorkManager
 public:
 	NetWorkManager(/* args */);
 	virtual~NetWorkManager();
-	CTcpPullServerPtr & Server() {return _tcpServer;}
-	CTcpPullClientPtr & Client() {return _tcpClient;}	
+	CTcpPullServerPtr & Server()     {return _tcpServer;}
+	CTcpPullClientPtr & Client()     {return _tcpClient;}	
+	MqttClient        & Mqtt()       {return _mqttClinet;} 
 private:
+    MqttClient          _mqttClinet;
 //CLient
 	TCPClientListener   _clisterner;
 	CTcpPullClientPtr   _tcpClient;

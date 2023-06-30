@@ -24,40 +24,39 @@
 #include "Bytes.h"
 #include "Database.h"
 //Test def 
-#define  NETWORK_TEST
+//#define NETWORK_TEST
 
-#ifdef NETWORK_TEST
+
+#ifdef  NETWORK_TEST
 #define CLIENT_IP "192.168.16.231"
 #define SERVER_IP "192.168.16.232"
 #define PORT   2345
 #endif
 
-
 //#define  CLOG_TEST
-// #define  DATABASE_TEST
+//#define  DATABASE_TEST
 class Application
 {
     //单例
     DECLARE_SINGLETON(Application)
-    using ThreadPoolShardPtr =      std::shared_ptr<ThreadPool>;
-    using BlockerMgrShardPtr =      std::shared_ptr<BlockerManager>;
-    using DriverMgrShardPtr  =      std::shared_ptr<DriverManager>;
-    using NetWorkMgrShardPtr =      std::shared_ptr<NetWorkManager>;
+    using ThreadPoolShardPtr =  std::shared_ptr<ThreadPool>;
+    using BlockerMgrShardPtr =  std::shared_ptr<BlockerManager>;
+    using DriverMgrShardPtr  =  std::shared_ptr<DriverManager>;
+    using NetWorkMgrShardPtr =  std::shared_ptr<NetWorkManager>;
 public:
     ~Application();
     //资源初始化
     void init();
     //开启系统任务
     void start();
-    //外部接口
     //线程池
-    ThreadPoolShardPtr     &      TPool        (){return this->_threadPool;}
+    ThreadPoolShardPtr   &   TPool       (){return this->_threadPool;}
     //事件发布订阅管理器
-    BlockerMgrShardPtr     &      BlcokerMgr   (){return this->_blockerMgr;}
+    BlockerMgrShardPtr   &   BlcokerMgr  (){return this->_blockerMgr;}
     //外设设备管理器
-    DriverMgrShardPtr      &      DriverMgr    (){return this->_driverMgr;}
+    DriverMgrShardPtr    &   DriverMgr   (){return this->_driverMgr;}
     //网络通信管理器
-    NetWorkMgrShardPtr     &      NetWorkMgr   (){return this->_netWorkMgr;}
+    NetWorkMgrShardPtr   &   NetWorkMgr  (){return this->_netWorkMgr;}
 private:
     //内部资源
     ThreadPoolShardPtr        _threadPool;

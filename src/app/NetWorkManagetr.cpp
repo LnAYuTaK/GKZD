@@ -3,6 +3,8 @@
 #include "NetWorkManager.h"
 #include "App.h"
 #include "CLOG.h"
+
+/***********************************************************************************************/
 EnHandleResult TCPServerListener ::OnPrepareListen(ITcpServer* pSender, SOCKET soListen)
 {
     return HR_OK;
@@ -47,7 +49,6 @@ EnHandleResult TCPServerListener ::OnClose(ITcpServer* pSender,
                                             EnSocketOperation enOperation, 
                                             int iErrorCode)
 {   
-
     return HR_OK;
 }
 /***********************************************************************************************/
@@ -98,9 +99,9 @@ EnHandleResult TCPClientListener::OnSend(ITcpClient* pSender,
 }
 /***********************************************************************************************/
 EnHandleResult TCPClientListener::OnClose(ITcpClient* pSender, 
-						CONNID dwConnID, 
-					    EnSocketOperation enOperation, 
-					    int iErrorCode)
+                                        CONNID dwConnID, 
+                                        EnSocketOperation enOperation, 
+                                        int iErrorCode)
 {
     return HR_OK;
 }
@@ -108,6 +109,9 @@ EnHandleResult TCPClientListener::OnClose(ITcpClient* pSender,
 NetWorkManager::NetWorkManager(/* args */)
     :_tcpServer(&_slistener)
     ,_tcpClient(&_clisterner)
+    ,_mqttClinet(std::string("192.168.16.231:1883"),
+                 std::string("client"),
+                 mqtt::create_options(MQTTVERSION_5))
 {
 
 }

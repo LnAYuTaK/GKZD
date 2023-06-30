@@ -3,7 +3,7 @@
 #define DB_FILE "test.db"
 
 #define THREAD_SLEEP_MS(x) do{std::this_thread::sleep_for \
-                           (std::chrono::milliseconds(x));}\
+                           (std::chrono::milliseconds(x));} \
                            while(0)  
 /***********************************************************/
 //实例化模块
@@ -16,7 +16,7 @@ Application::Application(/* args */)
    ,_dataBase(DB_FILE)
    #endif
 {
-   
+
 }
 /***********************************************************/
 Application* app(void)
@@ -82,8 +82,16 @@ void Application::init(/* args */)
 /***********************************************************/
 void Application::start()
 {
-  
-  //日志测试
+   //MQTT Test 
+    auto opts = mqtt::connect_options_builder()
+                    .mqtt_version(MQTTVERSION_5)
+                    .clean_start(true)
+                    .finalize();
+   opts.set_user_name("admin");
+   opts.set_password("public");
+   app()->NetWorkMgr()->Mqtt().Connect(opts);
+   
+   //日志测试
    #ifdef CLOG_TEST
    while (1)
    {

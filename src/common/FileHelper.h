@@ -37,7 +37,7 @@ public:
     static bool getContent(const std::string &file_name, std::string *content);
 
     static std::string getAbsolutePath(const std::string &prefix,
-                                                            const std::string &relative_path);
+                                     const std::string &relative_path);
 
     static bool pathExists(const std::string &path);
 
