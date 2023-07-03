@@ -25,13 +25,19 @@
 #include "Database.h"
 //Test def 
 //#define NETWORK_TEST
-
-
 #ifdef  NETWORK_TEST
 #define CLIENT_IP "192.168.16.231"
 #define SERVER_IP "192.168.16.232"
 #define PORT   2345
 #endif
+
+#define MQTT_TEST
+#ifdef MQTT_TEST
+#define MQTT_USERNAME    "admin"
+#define MQTT_PASSWD      "public"
+#endif
+#define MQTT_ADDRESS     "192.168.16.231:1883"
+#define MQTT_CLIENT_NAME "client"
 
 //#define  CLOG_TEST
 //#define  DATABASE_TEST

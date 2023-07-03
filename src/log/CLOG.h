@@ -1,7 +1,7 @@
 /**
  * @file CLOG.h
  * @author LnAYuTaK (807874484@qq.com)
- * @brief 日志模块
+ * @brief 日志模块 
  * @version 0.1
  * @date 2023-03-03
  * 
@@ -16,6 +16,7 @@
 #include <cstdio>
 #include "LogStream.h"
 #include <fstream>
+
 class CLOG
 {
   DECLARE_SINGLETON(CLOG)  
@@ -36,6 +37,7 @@ public:
     " WARN ",
     " ERROR"
   };
+  //Not Used 
   static constexpr const char* LogLevelNameColor[4] =
   {
     " \033[0m\033[1;36mDEBUG\033[0m ",
@@ -59,7 +61,7 @@ public:
   inline bool isToFile(){
     return _ToFile;
   }
-
+  
   inline void setToFile(bool select){
       this->_ToFile = select;
   }

@@ -78,18 +78,21 @@ void Application::init(/* args */)
    //开启重连线程
    Poll->submit(reConnect);
    #endif
+   #ifdef MQTT_TEST 
+   auto mqttc  =  app()->NetWorkMgr()->Mqtt();
+   auto opts = mqtt::connect_options_builder()
+                    .mqtt_version(MQTTVERSION_5)
+                    .clean_start(true)
+                    .finalize();
+   opts.set_user_name(MQTT_USERNAME);
+   opts.set_password(MQTT_PASSWD);
+   mqttc->Connect(opts);
+   #endif
+
 }
 /***********************************************************/
 void Application::start()
 {
-   //MQTT Test 
-    auto opts = mqtt::connect_options_builder()
-                    .mqtt_version(MQTTVERSION_5)
-                    .clean_start(true)
-                    .finalize();
-   opts.set_user_name("admin");
-   opts.set_password("public");
-   app()->NetWorkMgr()->Mqtt().Connect(opts);
    
    //日志测试
    #ifdef CLOG_TEST

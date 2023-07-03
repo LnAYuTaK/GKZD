@@ -1,7 +1,7 @@
 /**
  * @file Database.h
  * @author LnAYuTaK (807874484@qq.com)
- * @brief  数据库模块(提供统一数据库)
+ * @brief  数据库模块(提供统一sqlite3数据库接口)
  * @version 0.1
  * @date 2023-06-05
  * @copyright Copyright (c) 2023

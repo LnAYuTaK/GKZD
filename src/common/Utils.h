@@ -1,4 +1,15 @@
+/**
+ * @file Utils.h
+ * @author LnAYuTaK (807874484@qq.com)
+ * @brief 工具类 封装一些常用算法,函数
+ * @version 0.1
+ * @date 2023-07-02
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #pragma once 
+
 #include <algorithm>
 #include <limits>
 #include <type_traits>

@@ -1,3 +1,13 @@
+/**
+ * @file LogStream.h
+ * @author LnAYuTaK (807874484@qq.com)
+ * @brief 日志流模块
+ * @version 0.1
+ * @date 2023-07-02
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #pragma once 
 #include <assert.h>
 #include <string>
