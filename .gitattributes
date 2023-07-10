@@ -1,7 +1,7 @@
 *.md linguist-language=C++
 *.yml linguist-language=C++
 *.html linguist-language=C++
-*.js linguist-language=C++
+*.c linguist-language=C++
 *.xml linguist-language=C++
 *.css linguist-language=C++
 *.sql linguist-language=C++
