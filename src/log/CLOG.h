@@ -1,7 +1,7 @@
 /**
  * @file CLOG.h
  * @author LnAYuTaK (807874484@qq.com)
- * @brief 日志模块 
+ * @brief 日志模块
  * @version 0.1
  * @date 2023-03-03
  * 
@@ -73,6 +73,7 @@ public:
     LogMsg(CLOG_LEVEL nLevel,const char* pcFunc,const int& line)
     {
       std::lock_guard<std::mutex> lock(_mtx);
+       _stream.zeroBuffer();
       _stream << "["<< CLOG::GetCurrentDateTime()  << "]"
               << "["<< LogLevelName[(int)nLevel]   << "]" 
               << "["<< pcFunc                      << "]"
@@ -82,6 +83,7 @@ public:
     LogMsg(CLOG_LEVEL nLevel,const char* pcFunc,const char *file,const int& line)
     {
       std::lock_guard<std::mutex> lock(_mtx);
+      _stream.zeroBuffer();
       _stream << "["<< CLOG::GetCurrentDateTime()  << "]"
               << "["<< LogLevelName[(int)nLevel]   << "]" 
               << "["<< pcFunc                      << "]"

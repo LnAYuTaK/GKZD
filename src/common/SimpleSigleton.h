@@ -43,7 +43,7 @@ typename std::enable_if<!HasShutdown<T>::value>::type CallShutdown(
     T *instance) {
   (void)instance;
 }
-
+//未定义 去Waring
 #undef UNUSED
 #undef DISALLOW_COPY_AND_ASSIGN
 #define UNUSED(param) (void)param

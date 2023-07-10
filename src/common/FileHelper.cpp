@@ -3,7 +3,13 @@ using std::istreambuf_iterator;
 using std::string;
 using std::vector;
 
-//获取文件内容
+/***********************************************************************************************/
+bool FileHelper::isFileExists(const std::string fileName) 
+{
+    std::ifstream file(fileName);
+    return file.good();
+}
+/***********************************************************************************************/
 bool FileHelper::getContent(const std::string &file_name, std::string *content) 
 {
   std::ifstream fin(file_name);
@@ -14,10 +20,10 @@ bool FileHelper::getContent(const std::string &file_name, std::string *content)
   std::stringstream str_stream;
   str_stream << fin.rdbuf();
   *content = str_stream.str();
+  fin.close();
   return true;
 }
 /***********************************************************************************************/
-//拼接路径
 std::string FileHelper::getAbsolutePath(const std::string &prefix,
                             const std::string &relative_path) 
 {
@@ -36,21 +42,18 @@ std::string FileHelper::getAbsolutePath(const std::string &prefix,
   return prefix + "/" + relative_path;
 }
 /***********************************************************************************************/
-//判断路径是否存在
 bool FileHelper::pathExists(const std::string &path) 
 {
   struct stat info;
   return stat(path.c_str(), &info) == 0;
 }
 /***********************************************************************************************/
-//判断文件夹是否存在
 bool FileHelper::directoryExists(const std::string &directory_path) 
 {
   struct stat info;
   return stat(directory_path.c_str(), &info) == 0 && (info.st_mode & S_IFDIR);
 }
 /***********************************************************************************************/
-//通配符包含
 std::vector<std::string> FileHelper::globs(const std::string &pattern) 
 {
   glob_t globs = {};
@@ -66,7 +69,6 @@ std::vector<std::string> FileHelper::globs(const std::string &pattern)
   return results;
 }
 /***********************************************************************************************/
-//拷贝文件
 bool FileHelper::copyFile(const std::string &from, const std::string &to) 
 {
   std::ifstream src(from, std::ios::binary);
@@ -90,7 +92,6 @@ bool FileHelper::copyFile(const std::string &from, const std::string &to)
   return true;
 }
 /***********************************************************************************************/
-//拷贝文件夹
 bool FileHelper::copyDir(const std::string &from, const std::string &to) 
 {
   DIR *directory = opendir(from.c_str());
@@ -195,9 +196,6 @@ std::vector<std::string> FileHelper::listSubPaths(const std::string &directory_p
   return result;
 }
 /***********************************************************************************************/
-/**
- * file
-*/
 std::string FileHelper::getFileName(const std::string &path, const bool remove_extension) 
 {
   std::string::size_type start = path.rfind('/');
@@ -217,7 +215,6 @@ std::string FileHelper::getFileName(const std::string &path, const bool remove_e
   return path.substr(start, len);
 }
 /***********************************************************************************************/
-//获取当前路径
 std::string FileHelper::getCurrentPath() 
 {
   char tmp[PATH_MAX];

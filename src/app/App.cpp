@@ -1,4 +1,7 @@
+
 #include "App.h"
+#include "netconfig.pb.h"
+#include "ParaManager.h"
 #define MAX_THREAD 5
 #define DB_FILE "test.db"
 
@@ -90,10 +93,52 @@ void Application::init(/* args */)
    #endif
 
 }
+void Application::ParaInit()
+{
+   ParaManager mgr ;
+   //读参数文件测试
+   mgr.loadSysConf();
+   CLOG_INFO()<< mgr.sysConf.componentid();
+   CLOG_INFO()<<  mgr.sysConf.datainterval();
+   CLOG_INFO()<<  mgr.sysConf.devicestatusinterval(); 
+   mgr.loadNetConf();
+   CLOG_INFO()<<  mgr.netConf.tcpclientport();
+   CLOG_INFO()<<  mgr.netConf.tcpserverport();
+   CLOG_INFO()<<  mgr.netConf.mqttname();
+   CLOG_INFO()<<  mgr.netConf.mqttpassword();
+   CLOG_INFO()<<  mgr.netConf.mqttclientname();
+   CLOG_INFO() << mgr.netConf.mqttserverurl();
+   mgr.loadThresoldPara();
+  for (const GasThreshold& threshold : mgr.thresoldConfs.thresholds()) {
+    std::cout << "Name: " << threshold.name() 
+              << ", Min1: " << threshold.thresholdl_min1()
+              << ", Min2: " << threshold.thresholdl_min2()
+              << ", Min3: " << threshold.thresholdl_min3()
+              << ", Max1: " << threshold.thresholdl_max1()
+              << ", Max2: " << threshold.thresholdl_max2()
+              << ", Max3: " << threshold.thresholdl_max3()
+              << ", Change: " << threshold.thresholdchange()
+              << std::endl;  
+  }
+  mgr.loadFanPumpStatusConf();
+  CLOG_INFO()<< mgr.fanpumpstatusConf.status();
+  CLOG_INFO()<< mgr.fanpumpstatusConf.workmode();
+  mgr.loadNFanTimingConf();
+  CLOG_INFO()<< mgr.fantimingConf.active();
+  CLOG_INFO()<< mgr.fantimingConf.basetime();
+  CLOG_INFO()<< mgr.fantimingConf.endtime();
+  CLOG_INFO()<< mgr.fantimingConf.interval();
+  CLOG_INFO()<< mgr.fantimingConf.openmin();
+  //写参数文件测试
+  
+  mgr.fanpumpstatusConf.set_status("Close");
+  mgr.fanpumpstatusConf.set_workmode("Auto");
+  mgr.SaveFanPumpStatusConf(mgr.fanpumpstatusConf);
+}
 /***********************************************************/
 void Application::start()
 {
-   
+   ParaInit();//从配置文件中读出各参数
    //日志测试
    #ifdef CLOG_TEST
    while (1)

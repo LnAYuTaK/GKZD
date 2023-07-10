@@ -1,7 +1,7 @@
 /**
  * @file LogStream.h
  * @author LnAYuTaK (807874484@qq.com)
- * @brief 日志流模块
+ * @brief LogStream
  * @version 0.1
  * @date 2023-07-02
  * 
@@ -79,8 +79,8 @@ public:
 
   void append(const char* data, int len) { buffer_.append(data, len); }
   const Buffer& buffer() const { return buffer_; }
+  void zeroBuffer(){ buffer_.bzero();}
   void resetBuffer() { buffer_.reset(); }
-
 private:
   template<typename T>
   void formatInteger(T);

@@ -13,6 +13,7 @@
 #include <memory>
 #include <iostream>
 #include <string>
+#include <fstream>
 //user
 #include "CLOG.h"
 #include "SimpleSigleton.h"
@@ -23,6 +24,7 @@
 #include "FileHelper.h"
 #include "Bytes.h"
 #include "Database.h"
+
 //Test def 
 //#define NETWORK_TEST
 #ifdef  NETWORK_TEST
@@ -31,7 +33,7 @@
 #define PORT   2345
 #endif
 
-#define MQTT_TEST
+// #define MQTT_TEST
 #ifdef MQTT_TEST
 #define MQTT_USERNAME    "admin"
 #define MQTT_PASSWD      "public"
@@ -55,6 +57,8 @@ public:
     void init();
     //开启系统任务
     void start();
+    //参数初始化
+    void ParaInit();
     //线程池
     ThreadPoolShardPtr   &   TPool       (){return this->_threadPool;}
     //事件发布订阅管理器

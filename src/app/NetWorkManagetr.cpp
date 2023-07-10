@@ -1,5 +1,6 @@
 #include <memory>
 #include <iostream>
+
 #include "NetWorkManager.h"
 #include "App.h"
 #include "CLOG.h"
@@ -12,8 +13,6 @@ NetWorkManager::NetWorkManager(/* args */)
                  std::string(MQTT_CLIENT_NAME)))
 
 {
-
-
 
 }
 /***********************************************************************************************/

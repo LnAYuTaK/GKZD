@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 #项目名称
-project(demo)
-MESSAGE(STATUS "GKZD")
+project(ZD903Q)
+MESSAGE(STATUS "ZD903Q")
 #设置交叉编译器
 #交叉编译的系统名称
 set(CMAKE_SYSTEM_NAME Linux)
@@ -29,11 +29,13 @@ include_directories(src/driver)
 include_directories(src/app)
 include_directories(src/db)
 include_directories(src/net)
+include_directories(src/config)
 #第三方库Header
 include_directories(src/thirdparty/CSerialPort)
 include_directories(src/thirdparty/HP-Socket)
 include_directories(src/thirdparty/MQTT)
 include_directories(src/thirdparty/MQTT/mqtt)
+include_directories(src/thirdparty/Protobuf)
 #输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
@@ -52,11 +54,11 @@ aux_source_directory(${CMAKE_SOURCE_DIR}/src/common SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/log SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/db SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/net SRC_LIST)
+aux_source_directory(${CMAKE_SOURCE_DIR}/src/config SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/. SRC_LIST)
 
 #add_executable(想要生成的程序名 源文件)
 add_executable(${PROJECT_NAME}  ${SRC_LIST})
-
 
 if(BUILD_USE_STATIC)
     # 使用第三方动态库编译项目
@@ -64,8 +66,10 @@ if(BUILD_USE_STATIC)
     target_link_libraries(${PROJECT_NAME}  libcserialport.a)
     target_link_libraries(${PROJECT_NAME}  libhpsocket.a)
     target_link_libraries(${PROJECT_NAME}  libpaho-mqttpp3.a)
-    target_link_libraries(${PROJECT_NAME}  libpaho-mqtt3a.a)
+    target_link_libraries(${PROJECT_NAME}  libpaho-mqtt3a.a)    
     target_link_libraries(${PROJECT_NAME}  libsqlite3.so)
+    target_link_libraries(${PROJECT_NAME}  libprotobuf.so)
+    target_link_libraries(${PROJECT_NAME}  libprotoc.so)
 else()
     #使用第三方静态库编译项目
     message(STATUS "Use  Shard ThirdLib")

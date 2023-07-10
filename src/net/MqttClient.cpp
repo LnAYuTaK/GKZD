@@ -54,6 +54,7 @@ void MqttClient::OnReceive(const mqtt::const_message_ptr message)
 void MqttClient::OnDisconnected(const mqtt::properties& proe, mqtt::ReasonCode resason)
 {
 
+
 }
 /***********************************************************************************************/
 bool MqttClient::OnUpdateConnected(mqtt::connect_data &data)

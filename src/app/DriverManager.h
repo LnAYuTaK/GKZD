@@ -10,15 +10,16 @@
 
 #include <vector>
 #include <mutex>
-#include "SerialDriver.h"
 #include <memory>
+
+#include "SerialDriver.h"
 #include "SimpleSigleton.h"
 
 SERIAL_DRIVER_CLASS(Serial1);
 SERIAL_DRIVER_CLASS(Serial2);
 class DriverManager
 {
-     DISALLOW_COPY_AND_ASSIGN(DriverManager)
+    DISALLOW_COPY_AND_ASSIGN(DriverManager)
      //using   DriverCompVector  =  std::vector<std::shared_ptr<DriverBase&>>;
 public:
     DriverManager();

@@ -1,12 +1,3 @@
-/**
- * @file TCPClient.h
- * @author LnAYuTaK (807874484@qq.com)
- * @brief TCP客户端
- * @version 0.1
- * @date 2023-07-03
- * 
- * 
- */
 #pragma once 
 
 #include "HPSocket.h"
