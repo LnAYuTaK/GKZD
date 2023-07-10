@@ -16,49 +16,45 @@
 #include <fstream>
 //user
 #include "CLOG.h"
+#include "macro.h"
+#include "Bytes.h"
 #include "SimpleSigleton.h"
 #include "ThreadPool.h"
+#include "FileHelper.h"
+#include "Bytes.h"
+
 #include "NetWorkManager.h"
 #include "DriverManager.h"
 #include "BlockerManager.h"
-#include "FileHelper.h"
-#include "Bytes.h"
 #include "Database.h"
+#include "ParaManager.h"
 
 //Test def 
-//#define NETWORK_TEST
-#ifdef  NETWORK_TEST
-#define CLIENT_IP "192.168.16.231"
-#define SERVER_IP "192.168.16.232"
-#define PORT   2345
-#endif
-
-// #define MQTT_TEST
-#ifdef MQTT_TEST
-#define MQTT_USERNAME    "admin"
-#define MQTT_PASSWD      "public"
-#endif
-#define MQTT_ADDRESS     "192.168.16.231:1883"
-#define MQTT_CLIENT_NAME "client"
-
+// #define IO_TEST 
+#define MAX_THREAD 5
+#define DB_FILE "test.db"
+#define MQTT_TEST
+#define NETWORK_TEST
 //#define  CLOG_TEST
 //#define  DATABASE_TEST
 class Application
 {
     //单例
     DECLARE_SINGLETON(Application)
+
+    using ParaMgrShardPtr    =  std::shared_ptr<ParaManager>;
     using ThreadPoolShardPtr =  std::shared_ptr<ThreadPool>;
     using BlockerMgrShardPtr =  std::shared_ptr<BlockerManager>;
     using DriverMgrShardPtr  =  std::shared_ptr<DriverManager>;
     using NetWorkMgrShardPtr =  std::shared_ptr<NetWorkManager>;
+
 public:
     ~Application();
     //资源初始化
     void init();
     //开启系统任务
     void start();
-    //参数初始化
-    void ParaInit();
+    ParaMgrShardPtr      &   ParaMgr     (){return this->_paraMgr;}
     //线程池
     ThreadPoolShardPtr   &   TPool       (){return this->_threadPool;}
     //事件发布订阅管理器
@@ -69,10 +65,13 @@ public:
     NetWorkMgrShardPtr   &   NetWorkMgr  (){return this->_netWorkMgr;}
 private:
     //内部资源
+    ParaMgrShardPtr           _paraMgr; 
     ThreadPoolShardPtr        _threadPool;
     BlockerMgrShardPtr        _blockerMgr;
     NetWorkMgrShardPtr        _netWorkMgr;
     DriverMgrShardPtr         _driverMgr;
+    
+    // ParaManager               mgr;
     //TUDO 数据库模块
     #ifdef DATABASE_TEST
     Database                  _dataBase;

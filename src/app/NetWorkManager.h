@@ -7,6 +7,10 @@
  * @copyright Copyright (c) 2023
  */
 #pragma once 
+
+#include <memory>
+#include <iostream>
+//app
 //common
 #include "SimpleSigleton.h"
 #include "CLOG.h"
@@ -15,16 +19,20 @@
 #include "TCPClient.h"
 #include "TCPServer.h"
 
+class Application;
+
 class NetWorkManager
 {
 	DISALLOW_COPY_AND_ASSIGN(NetWorkManager)
 public:
 	NetWorkManager(/* args */);
 	virtual~NetWorkManager();
+
 	CTcpPullServerPtr & Server()     {return _tcpServer;}
 	CTcpPullClientPtr & Client()     {return _tcpClient;}	
 	MQTTClientPtr     & Mqtt()       {return _mqttClient;} 
 private:
+//MQTT
 	MQTTClientPtr       _mqttClient;
 //CLient
 	TCPClientListener   _clisterner;

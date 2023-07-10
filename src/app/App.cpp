@@ -1,17 +1,11 @@
 
 #include "App.h"
-#include "netconfig.pb.h"
-#include "ParaManager.h"
-#define MAX_THREAD 5
-#define DB_FILE "test.db"
-
-#define THREAD_SLEEP_MS(x) do{std::this_thread::sleep_for \
-                           (std::chrono::milliseconds(x));} \
-                           while(0)  
+#include "IOControl.h"
 /***********************************************************/
 //实例化模块
 Application::Application(/* args */)
-   :_threadPool(std::make_shared<ThreadPool>(MAX_THREAD))
+   :_paraMgr(std::make_shared<ParaManager>())
+   ,_threadPool(std::make_shared<ThreadPool>(MAX_THREAD))
    ,_blockerMgr(std::make_shared<BlockerManager>())
    ,_netWorkMgr(std::make_shared<NetWorkManager>())
    ,_driverMgr(std::make_shared<DriverManager>())
@@ -19,7 +13,7 @@ Application::Application(/* args */)
    ,_dataBase(DB_FILE)
    #endif
 {
-
+   
 }
 /***********************************************************/
 Application* app(void)
@@ -31,9 +25,9 @@ Application::~Application()
 {
 }
 /***********************************************************/
-#ifdef NETWORK_TEST
 //处理回调信息 如果不是耗时操作不需要开启线程 
 //这里模拟如果耗时操作
+#ifdef NETWORK_TEST
 void HandleServer(const std::shared_ptr<Bytes>&msg)
 {
    auto function =[&msg](){
@@ -52,93 +46,75 @@ void HandleClient(const std::shared_ptr<Bytes>&msg)
 /***********************************************************/
 void Application::init(/* args */)
 {
-//网络模块初始化  订阅客户端服务器的接收消息
+#ifdef IO_TEST
+   IOControl::setValue(IOControl::Relay8,IOControl::GPIO_SET);
+   IOControl::setValue(IOControl::Relay8,IOControl::GPIO_RESET);
+#endif
+//网络模块初始化  
+  auto NetWorkMgr = app()->NetWorkMgr();
+  auto NetConf    = app()->ParaMgr()->netConf().obj();
 #ifdef NETWORK_TEST 
-   auto NetWorkMgr = app()->NetWorkMgr();
-   auto BlockerMgr = app()->BlcokerMgr();
-   auto Poll       = app()->TPool();
-   //订阅消息 ---执行回调
-   BlockerMgr->Subscribe<Bytes>("TCPSever",1, "HandleServer",HandleServer);
-   BlockerMgr->Subscribe<Bytes>("TCPClient",1,"HandleClient",HandleClient);
-   //重连线程函数 自动检测服务器客户端状态重连
-   auto reConnect = [=]() {
-      while(1)
-      {
-         if(NetWorkMgr->Server()->GetState()==EnServiceState::SS_STOPPED)
-         {
-            NetWorkMgr->Server()->Start(SERVER_IP,PORT);
-         }
-         if((!(NetWorkMgr->Client()->IsConnected())) || 
-           NetWorkMgr->Client()->GetState()==EnServiceState::SS_STOPPED)
-         {
-            NetWorkMgr->Client()->Start(CLIENT_IP,PORT);
-         }
-      }
-   };
+   auto ClientHost  = NetConf.clienthost().c_str();
+   auto ServerHost  = NetConf.serverhost().c_str();
+   auto ClientPort  = NetConf.tcpclientport();
+   auto ServerPort  = NetConf.tcpserverport();
    //客户端服务器开启
-   NetWorkMgr->Server()->Start(SERVER_IP,PORT);
-   NetWorkMgr->Client()->Start(CLIENT_IP,PORT);
-   //开启重连线程
-   Poll->submit(reConnect);
+   NetWorkMgr->Server()->Start(ServerHost,ServerPort);
+   NetWorkMgr->Client()->Start(ClientHost,ClientPort);
+   //订阅消息 ---执行回调
    #endif
    #ifdef MQTT_TEST 
-   auto mqttc  =  app()->NetWorkMgr()->Mqtt();
+   NetWorkMgr->Mqtt()->Start(NetConf.mqttserverurl(),
+                             NetConf.mqttclientname());
    auto opts = mqtt::connect_options_builder()
                     .mqtt_version(MQTTVERSION_5)
                     .clean_start(true)
                     .finalize();
-   opts.set_user_name(MQTT_USERNAME);
-   opts.set_password(MQTT_PASSWD);
-   mqttc->Connect(opts);
+   opts.set_user_name(NetConf.mqttname());
+   opts.set_password(NetConf.mqttpassword());
+   NetWorkMgr->Mqtt()->Connect(opts);
+   THREAD_SLEEP_MS(2000);
    #endif
-
-}
-void Application::ParaInit()
-{
-   ParaManager mgr ;
-   //读参数文件测试
-   mgr.loadSysConf();
-   CLOG_INFO()<< mgr.sysConf.componentid();
-   CLOG_INFO()<<  mgr.sysConf.datainterval();
-   CLOG_INFO()<<  mgr.sysConf.devicestatusinterval(); 
-   mgr.loadNetConf();
-   CLOG_INFO()<<  mgr.netConf.tcpclientport();
-   CLOG_INFO()<<  mgr.netConf.tcpserverport();
-   CLOG_INFO()<<  mgr.netConf.mqttname();
-   CLOG_INFO()<<  mgr.netConf.mqttpassword();
-   CLOG_INFO()<<  mgr.netConf.mqttclientname();
-   CLOG_INFO() << mgr.netConf.mqttserverurl();
-   mgr.loadThresoldPara();
-  for (const GasThreshold& threshold : mgr.thresoldConfs.thresholds()) {
-    std::cout << "Name: " << threshold.name() 
-              << ", Min1: " << threshold.thresholdl_min1()
-              << ", Min2: " << threshold.thresholdl_min2()
-              << ", Min3: " << threshold.thresholdl_min3()
-              << ", Max1: " << threshold.thresholdl_max1()
-              << ", Max2: " << threshold.thresholdl_max2()
-              << ", Max3: " << threshold.thresholdl_max3()
-              << ", Change: " << threshold.thresholdchange()
-              << std::endl;  
-  }
-  mgr.loadFanPumpStatusConf();
-  CLOG_INFO()<< mgr.fanpumpstatusConf.status();
-  CLOG_INFO()<< mgr.fanpumpstatusConf.workmode();
-  mgr.loadNFanTimingConf();
-  CLOG_INFO()<< mgr.fantimingConf.active();
-  CLOG_INFO()<< mgr.fantimingConf.basetime();
-  CLOG_INFO()<< mgr.fantimingConf.endtime();
-  CLOG_INFO()<< mgr.fantimingConf.interval();
-  CLOG_INFO()<< mgr.fantimingConf.openmin();
-  //写参数文件测试
-  
-  mgr.fanpumpstatusConf.set_status("Close");
-  mgr.fanpumpstatusConf.set_workmode("Auto");
-  mgr.SaveFanPumpStatusConf(mgr.fanpumpstatusConf);
 }
 /***********************************************************/
 void Application::start()
 {
-   ParaInit();//从配置文件中读出各参数
+   #ifdef NETWORK_TEST
+   auto NetConf    = app()->ParaMgr()->netConf().obj();
+   auto NetWorkMgr = app()->NetWorkMgr();
+   auto BlockerMgr = app()->BlcokerMgr();
+   auto Poll       = app()->TPool();
+   //重连线程函数 自动检测服务器客户端状态重连
+   auto reConnect = [=]() {
+      while(1)
+      {
+         #ifdef MQTT_TEST
+         if(!(NetWorkMgr->Mqtt()->isConnected()))
+         {
+            CLOG_WARN() << "MQTT Reconnect";
+            NetWorkMgr->Mqtt()->reConnect();
+         }
+         #endif //MQTT_TEST
+         if(NetWorkMgr->Server()->GetState()==EnServiceState::SS_STOPPED)
+         {
+            CLOG_WARN() << "TCPServer Reconnect";
+            NetWorkMgr->Server()->Start(NetConf.serverhost().c_str(),
+                                        NetConf.tcpserverport());
+         }
+         if((!(NetWorkMgr->Client()->IsConnected())) || 
+           NetWorkMgr->Client()->GetState()==EnServiceState::SS_STOPPED)
+         {
+            CLOG_WARN() << "TCPClient Reconnect";
+            NetWorkMgr->Client()->Start(NetConf.serverhost().c_str(),
+                                        NetConf.tcpclientport());
+         }
+      }
+   };
+   //开启重连线程
+   Poll->submit(reConnect);
+   BlockerMgr->Subscribe<Bytes>("TCPSever",1, "HandleServer",HandleServer);
+   BlockerMgr->Subscribe<Bytes>("TCPClient",1,"HandleClient",HandleClient);
+   #endif //NETWORK_TEST
    //日志测试
    #ifdef CLOG_TEST
    while (1)
@@ -149,14 +125,15 @@ void Application::start()
       CLOG_INFO_FMT("Times: %d",a);
       CLOG_ERROR() <<"Times: "  <<  a << " test" << 1.1;
       CLOG_WARN() <<"Times: "  <<  a ;
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+      THREAD_SLEEP_MS(1000);
    }
-   #endif
+   
+   #endif //CLOG_TEST
    //数据库创建写入测试
    #ifdef  DATABASE_TEST
    int ret = _dataBase.exec("CREATE TABLE IF NOT EXISTS table1 (test1 INTEGER PRIMARY KEY UNIQUE,test2 INTEGER UNIQUE);");
    ret = _dataBase.exec("INSERT INTO table1 (test1, test2) VALUES (1, 30);");
-   #endif
+   #endif //DATABASE_TEST
 }
 /***********************************************************/
 

@@ -20,14 +20,39 @@
 
 class MqttClient
 {
-public:
 
+public:
 	using mqttPtr = std::shared_ptr<mqtt::topic>;
 	//
-	MqttClient(const std::string& serverURI, 
-			   const std::string& clientId,
-			   const mqtt::create_options& opts = mqtt::create_options(MQTTVERSION_5));
+	MqttClient();
 	virtual ~MqttClient();
+
+    bool Start(const std::string& serverURI, 
+			   const std::string& clientId,
+			   const mqtt::create_options& opts = mqtt::create_options(MQTTVERSION_5))
+	{
+	
+			_client = new mqtt::async_client(serverURI,clientId,opts);
+			_client->set_connected_handler(std::bind(&MqttClient::OnConnected,
+												this, 
+												std::placeholders::_1));
+			_client->set_connection_lost_handler(std::bind(&MqttClient::OnConnectedLost,
+												this, 
+												std::placeholders::_1));
+			_client->set_message_callback(std::bind(&MqttClient::OnReceive, 
+												this, 
+												std::placeholders::_1));
+			_client->set_disconnected_handler(std::bind(&MqttClient::OnDisconnected,
+												this,
+												std::placeholders::_1,
+												std::placeholders::_2));
+			_client->set_update_connection_handler(std::bind(&MqttClient::OnUpdateConnected,
+												this,
+												std::placeholders::_1));
+		
+		return true;
+	}
+
     /**
      * @brief 链接
      * 
@@ -35,7 +60,15 @@ public:
      */
 	void Connect(mqtt::connect_options ops)
 	{
-		_client.connect(ops);
+		_client->connect(ops);
+	}
+    /**
+     * @brief 
+     * Reconnect
+     */
+	void reConnect()
+	{
+		_client->reconnect();
 	}
     /**
      * @brief 判断是否链接
@@ -45,7 +78,7 @@ public:
      */
     bool isConnected() 
 	{ 
-		return _client.is_connected();
+		return _client->is_connected();
 	}
 	/**
 	 * @brief 发布消息
@@ -59,7 +92,7 @@ public:
 				 std::string payload,
 				 int qos = 2, bool retained = true)
 	{
-		_client.publish(topic,(void*)(payload.c_str()),payload.size());
+		_client->publish(topic,(void*)(payload.c_str()),payload.size());
 	}
     /**
      * @brief 订阅消息
@@ -69,7 +102,7 @@ public:
      */
 	void subscribe(const string& topicFilter, int qos=2)
 	{
-		_client.subscribe(topicFilter,qos);
+		_client->subscribe(topicFilter,qos);
 	}
 	//各种回调
     void OnConnected(const std::string& cause);
@@ -82,9 +115,8 @@ public:
 
 	bool OnUpdateConnected(mqtt::connect_data &data);
 private: 
-	mqtt::async_client _client;
+	mqtt::async_client *_client;
 	//No 
-	MqttClient() =delete;
 };
 
 using MQTTClientPtr = std::shared_ptr<MqttClient>;

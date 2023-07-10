@@ -1,31 +1,13 @@
 #include "MqttClient.h"
-MqttClient::MqttClient(const std::string& serverURI, 
-			           const std::string& clientId,
-			           const mqtt::create_options& opts)
-    :_client(serverURI,clientId, opts) 
+MqttClient::MqttClient()
 {
-    _client.set_connected_handler(std::bind(&MqttClient::OnConnected,
-                                        this, 
-                                        std::placeholders::_1));
-    _client.set_connection_lost_handler(std::bind(&MqttClient::OnConnectedLost,
-                                        this, 
-                                        std::placeholders::_1));
-    _client.set_message_callback(std::bind(&MqttClient::OnReceive, 
-                                        this, 
-                                        std::placeholders::_1));
-    _client.set_disconnected_handler(std::bind(&MqttClient::OnDisconnected,
-                                        this,
-                                        std::placeholders::_1,
-                                        std::placeholders::_2));
-    _client.set_update_connection_handler(std::bind(&MqttClient::OnUpdateConnected,
-                                        this,
-                                        std::placeholders::_1));
+
 }
 /***********************************************************************************************/
 MqttClient::~MqttClient()
 {
-    _client.disconnect();
-    _client.disable_callbacks();
+    _client->disconnect();
+    _client->disable_callbacks();
 }
 
 /***********************************************************************************************/
@@ -40,7 +22,6 @@ void MqttClient::OnConnected(const std::string& cause)
 void MqttClient::OnConnectedLost(const std::string& cause)
 {
     CLOG_WARN()<<"Reconnect";
-    
 }
 /***********************************************************************************************/
 void MqttClient::OnReceive(const mqtt::const_message_ptr message)

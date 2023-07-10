@@ -10,7 +10,8 @@
 enum DriverType {
     SerialType, 
     I2cType, 
-    SpiType
+    SpiType,
+    GPIOType
 }; 
 
 class DriverBase
@@ -22,5 +23,14 @@ public:
     virtual ~DriverBase(){;}
 };
 
+
+class IODevice
+{
+
+
+
+
+
+};
 
 

@@ -30,8 +30,8 @@ public:
 
   static const char  digits[];
   static const char* zero;
-  static const char digitsHex[];
-  
+  static const  char digitsHex[];
+
   static inline void memZero(void* p, size_t n)
   {
       memset(p, 0, n);
@@ -48,7 +48,7 @@ public:
   static bool jsonToProto(const std::string& json, google::protobuf::Message& message) {
       return JsonStringToMessage(json, &message).ok();
   }
-  //16进制转换
+  //
   static size_t convertHex(char buf[], uintptr_t value);
 
   template<typename T>
