@@ -12,15 +12,15 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
-#include "SimpleSigleton.h"
 #include "Blocker.h"
+#include "SimpleSigleton.h"
 
-class BlockerManager 
-{
-        
+class BlockerManager {
   DISALLOW_COPY_AND_ASSIGN(BlockerManager)
-  using BlockerMap =  std::unordered_map<std::string, std::shared_ptr<BlockerBase>>;
-public:
+  using BlockerMap =
+      std::unordered_map<std::string, std::shared_ptr<BlockerBase>>;
+
+ public:
   BlockerManager();
   virtual ~BlockerManager();
 
@@ -129,6 +129,3 @@ std::shared_ptr<Blocker<T>> BlockerManager::GetOrCreateBlocker(
   }
   return blocker;
 }
-
-
-

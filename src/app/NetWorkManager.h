@@ -6,40 +6,37 @@
  * @date 2023-06-26
  * @copyright Copyright (c) 2023
  */
-#pragma once 
+#pragma once
 
-#include <memory>
 #include <iostream>
-//app
-//common
+#include <memory>
+// app
+#include "App.h"
+// common
+#include "CLog.h"
 #include "SimpleSigleton.h"
-#include "CLOG.h"
-//net
+// net
 #include "MqttClient.h"
 #include "TCPClient.h"
 #include "TCPServer.h"
 
-class Application;
+class NetWorkManager {
+  DISALLOW_COPY_AND_ASSIGN(NetWorkManager)
+ public:
+  NetWorkManager(/* args */);
+  virtual ~NetWorkManager();
 
-class NetWorkManager
-{
-	DISALLOW_COPY_AND_ASSIGN(NetWorkManager)
-public:
-	NetWorkManager(/* args */);
-	virtual~NetWorkManager();
+  CTcpPullServerPtr& Server() { return _tcpServer; }
+  CTcpPullClientPtr& Client() { return _tcpClient; }
+  MQTTClientPtr& Mqtt() { return _mqttClient; }
 
-	CTcpPullServerPtr & Server()     {return _tcpServer;}
-	CTcpPullClientPtr & Client()     {return _tcpClient;}	
-	MQTTClientPtr     & Mqtt()       {return _mqttClient;} 
-private:
-//MQTT
-	MQTTClientPtr       _mqttClient;
-//CLient
-	TCPClientListener   _clisterner;
-	CTcpPullClientPtr   _tcpClient;
-//Server
-    TCPServerListener   _slistener;
-	CTcpPullServerPtr   _tcpServer;	
+ private:
+  // MQTT
+  MQTTClientPtr _mqttClient;
+  // CLient
+  TCPClientListener _clisterner;
+  CTcpPullClientPtr _tcpClient;
+  // Server
+  TCPServerListener _slistener;
+  CTcpPullServerPtr _tcpServer;
 };
-
-

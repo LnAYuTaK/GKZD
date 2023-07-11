@@ -1,13 +1,9 @@
 #include "App.h"
-#include <unistd.h>
-#define imsleep(microsecond) usleep(1000 * microsecond) // ms
-int main(int argc, char *argv[])
-{ 
-	    app()->init();
-		app()->start();
-        for (;;)
-        {
-            imsleep(1);
-        }
-        return 0;
+int main(int argc, char *argv[]) {
+  app()->init();
+  app()->start();
+  for (;;) {
+    THREAD_SLEEP_MCROS(1000);
+  }
+  return 0;
 }

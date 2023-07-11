@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <cstddef>
 #include <functional>
@@ -259,6 +259,3 @@ void Blocker<T>::Notify(const MessagePtr& msg) {
     item.second(msg);
   }
 }
-
-
-

@@ -5,30 +5,31 @@
  * @version 0.1
  * @date 2023-06-01
  */
-#pragma once 
+#pragma once
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <mutex>
+#include <new>
 #include <type_traits>
 #include <utility>
-#include <cstdlib>
-#include <new>
-#define DEFINE_TYPE_TRAIT(name, func)                     \
-  template <typename T>                                   \
-  struct name {                                           \
-    template <typename Class>                             \
-    static constexpr bool Test(decltype(&Class::func)*) { \
-      return true;                                        \
-    }                                                     \
-    template <typename>                                   \
-    static constexpr bool Test(...) {                     \
-      return false;                                       \
-    }                                                     \
-                                                          \
-    static constexpr bool value = Test<T>(nullptr);       \
-  };                                                      \
-                                                          \
-  template <typename T>                                   \
+
+#define DEFINE_TYPE_TRAIT(name, func)                      \
+  template <typename T>                                    \
+  struct name {                                            \
+    template <typename Class>                              \
+    static constexpr bool Test(decltype(&Class::func) *) { \
+      return true;                                         \
+    }                                                      \
+    template <typename>                                    \
+    static constexpr bool Test(...) {                      \
+      return false;                                        \
+    }                                                      \
+                                                           \
+    static constexpr bool value = Test<T>(nullptr);        \
+  };                                                       \
+                                                           \
+  template <typename T>                                    \
   constexpr bool name<T>::value;
 
 DEFINE_TYPE_TRAIT(HasShutdown, Shutdown)
@@ -49,11 +50,13 @@ typename std::enable_if<!HasShutdown<T>::value>::type CallShutdown(
 #define UNUSED(param) (void)param
 
 //禁止拷贝构造宏
-#define DISALLOW_COPY_AND_ASSIGN(classname) \
-  classname(const classname &) = delete;    \
-  classname &operator=(const classname &) = delete;
+#define DISALLOW_COPY_AND_ASSIGN(classname)         \
+  classname(const classname &) = delete;            \
+  classname(const classname &&) = delete;           \
+  classname &operator=(const classname &) = delete; \
+  classname &operator=(classname &&) = delete;
 
-//单例注册宏 
+//单例注册宏
 #define DECLARE_SINGLETON(classname)                                      \
  public:                                                                  \
   static classname *Instance(bool create_if_needed = true) {              \
@@ -76,11 +79,3 @@ typename std::enable_if<!HasShutdown<T>::value>::type CallShutdown(
  private:                                                                 \
   classname();                                                            \
   DISALLOW_COPY_AND_ASSIGN(classname)
-
-
-
-
-
-
-
-

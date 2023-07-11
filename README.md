@@ -5,10 +5,12 @@
     |-- CMakeLists.txt
     |-- LICENSE
     |-- README.md
-    |-- libSoure 
     |-- bin
     |-- build   
     |-- lib
+    |-- thirdparty
+    |   |-- include
+    |   |-- lib
     |-- src
     |   |-- main.cpp   
     |   |-- app         
@@ -17,14 +19,6 @@
     |   |-- db
     |   |-- net
     |   |-- config
-    |   |-- log
-    |   |-- thirdparty
-    |       |-- CSerialPort 
-    |       |-- HP-Socket
-    |       |-- MQTT
-    |       |-- Protobuf
-    |       |-- Sqlite3
-
 ```
 
 ## 项目介绍
@@ -41,12 +35,12 @@
 
 ```console
 $ cd GWZD 
-$ cd lib tar -xzvf develop.tar.gz && cd .. 
+$ cd thirdparty/lib  tar -xzvf develop.tar.gz && cd .. 
 $ mkdir build && cd build
 $ cmake .. 
 $ make
 将在 bin 目录生成默认应用程序 
-最后将 lib/copylib.tar.gz 放到 开发板的 /usr/lib  下
+最后将 thirdparty/lib/copylib.tar.gz 解压放到 开发板的 /usr/lib  下
 ```
 ### 用例展示
 
