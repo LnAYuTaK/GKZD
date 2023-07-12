@@ -13,7 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include "Blocker.h"
-#include "SimpleSigleton.h"
+#include "MacroDef.h"
 
 class BlockerManager {
   DISALLOW_COPY_AND_ASSIGN(BlockerManager)

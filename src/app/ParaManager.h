@@ -10,7 +10,7 @@
 #include "CLog.h"
 #include "Utils.h"
 #include "FileHelper.h"
-#include "SimpleSigleton.h"
+#include "MacroDef.h"
 //config
 #include "fanpumpstatusconfig.pb.h"
 #include "fantimingconfig.pb.h"
@@ -29,7 +29,7 @@ class ProtoFact {
     }
   }
 
-  T& obj() { return _obj; }
+  T* obj() { return &_obj; }
   //保存到Json参数
   bool saveConf() {
     std::lock_guard<std::mutex> lock(_mut);
@@ -71,7 +71,8 @@ class ParaManager {
   ParaManager();
   ~ParaManager();
 
-  ProtoFact<NetConfig>& netConf() { return this->netConfFact; }
+  ProtoFact<NetConfig>& netConf() { 
+    return this->netConfFact; }
   ProtoFact<SysConfig>& sysConf() { return this->sysConfFact; }
   ProtoFact<GasThresholdList>& gasConfsFact() {
     return this->thresoldConfsFact;

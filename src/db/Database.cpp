@@ -1,7 +1,5 @@
 #include "Database.h"
-#include <string.h>
-#include <fstream>
-#include "CLog.h"
+
 
 Database::Database(const char* apFilename,
                    const int aFlags /* = SQLite::OPEN_READONLY*/,

@@ -18,8 +18,7 @@
 #include "Bytes.h"
 #include "CLog.h"
 #include "FileHelper.h"
-#include "Macro.h"
-#include "SimpleSigleton.h"
+#include "MacroDef.h"
 #include "ThreadPool.h"
 #include "IOControl.h"
 //app
@@ -34,8 +33,8 @@ class NetWorkManager;
 
 #define MAX_THREAD 5
 #define DB_FILE "test.db"
-#define MQTT_TEST
-#define NETWORK_TEST
+// #define MQTT_TEST
+// #define NETWORK_TEST
 //#define  DATABASE_TEST
 class Application {
   //单例

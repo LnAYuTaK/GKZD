@@ -49,10 +49,10 @@ void Application::init(/* args */) {
   IOControl::setValue(IOControl::Relay8, IOControl::GPIO_SET);
   IOControl::setValue(IOControl::Relay8, IOControl::GPIO_RESET);
 #endif
+#ifdef NETWORK_TEST
   //网络模块初始化
   auto NetWorkMgr = app()->NetWorkMgr();
   auto NetConf = app()->ParaMgr()->netConf().obj();
-#ifdef NETWORK_TEST
   auto ClientHost = NetConf.clienthost().c_str();
   auto ServerHost = NetConf.serverhost().c_str();
   auto ClientPort = NetConf.tcpclientport();
@@ -109,6 +109,16 @@ void Application::start() {
   BlockerMgr->Subscribe<Bytes>("TCPSever", 1, "HandleServer", HandleServer);
   BlockerMgr->Subscribe<Bytes>("TCPClient", 1, "HandleClient", HandleClient);
 #endif  // NETWORK_TEST
+
+ auto netConfs = app()->ParaMgr()->netConf().obj();
+
+ CLOG_INFO() << netConfs->mqttclientname();
+ netConfs->set_mqttclientname("123123123123123");
+
+ CLOG_INFO() << netConfs->mqttclientname();
+ app()->ParaMgr()->netConf().saveConf();
+
+
 //数据库创建写入测试
 #ifdef DATABASE_TEST
   int ret = _dataBase.exec(

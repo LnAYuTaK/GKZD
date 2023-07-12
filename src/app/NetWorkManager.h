@@ -14,7 +14,7 @@
 #include "App.h"
 // common
 #include "CLog.h"
-#include "SimpleSigleton.h"
+#include "MacroDef.h"
 // net
 #include "MqttClient.h"
 #include "TCPClient.h"

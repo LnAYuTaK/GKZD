@@ -14,20 +14,29 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+#设置使用是否使用动态库
+set(BUILD_USE_STATIC   ON CACHE BOOL "Build Use static library")
 
 message(STATUS "CMAKE_C_COMPILER:" ${CMAKE_C_COMPILER})
 message(STATUS "CMAKE_CXX_COMPILER:" ${CMAKE_CXX_COMPILER})
 
-#设置使用是否使用动态库
-set(BUILD_USE_STATIC   ON CACHE BOOL "Build Use static library")
+# # TESTS
+# option(CMAKE_ENABLE_TEST "Whether to enable unit tests" ON)
+
+# if(CMAKE_ENABLE_TEST)
+#     message(STATUS "Unit tests enabled")
+#     include_directories(thirdparty/include/GTest)
+#     set(GWZD_ENABLE_TEST ON)
+#     enable_testing()
+# endif()
 
 #添加头文件的路径 
-include_directories(src/common)
+include_directories(src/base)
 include_directories(src/device)
 include_directories(src/app)
 include_directories(src/db)
 include_directories(src/net)
-include_directories(src/config)
+include_directories(src/proto)
 #第三方库Header
 include_directories(thirdparty/include/CSerialPort)
 include_directories(thirdparty/include/HP-Socket)
@@ -45,11 +54,11 @@ add_definitions(-std=c++17)
 
 #添加源文件路径
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/app SRC_LIST)
+aux_source_directory(${CMAKE_SOURCE_DIR}/src/base SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/device SRC_LIST)
-aux_source_directory(${CMAKE_SOURCE_DIR}/src/common SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/db SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/net SRC_LIST)
-aux_source_directory(${CMAKE_SOURCE_DIR}/src/config SRC_LIST)
+aux_source_directory(${CMAKE_SOURCE_DIR}/src/proto SRC_LIST)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/. SRC_LIST)
 
 #添加动态连接库的路径

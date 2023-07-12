@@ -11,8 +11,11 @@
 #include <string.h>
 #include <memory>
 #include <vector>
-#include "SimpleSigleton.h"
+#include "MacroDef.h"
 #include "sqlite3.h"
+#include <string.h>
+#include <fstream>
+#include "CLog.h"
 
 using queryVector = std::vector<std::vector<std::string>>;
 class Database {

@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "SerialDriver.h"
-#include "SimpleSigleton.h"
+#include "MacroDef.h"
 #include <iostream>
 #include "CLog.h"
 
