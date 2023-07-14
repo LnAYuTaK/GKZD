@@ -22,6 +22,9 @@
 #include "ThreadPool.h"
 #include "IOControl.h"
 //app
+#include "Loop.h"
+#include "EPollFdEvent.h"
+#include "FdEvent.h"
 
 // Test def
 // #define IO_TEST
@@ -31,7 +34,7 @@ class BlockerManager;
 class DriverManager;
 class NetWorkManager;
 
-#define MAX_THREAD 5
+#define FD_EVENT_TEST
 #define DB_FILE "test.db"
 // #define MQTT_TEST
 // #define NETWORK_TEST
@@ -44,13 +47,22 @@ class Application {
   using BlockerMgrShardPtr = std::shared_ptr<BlockerManager>;
   using DriverMgrShardPtr  = std::shared_ptr<DriverManager>;
   using NetWorkMgrShardPtr = std::shared_ptr<NetWorkManager>;
-
  public:
   ~Application();
   //资源初始化
   void init();
   //开启系统任务
   void start();
+  //Event Loop;
+  void exec(){
+    if(loop_)
+    {
+      loop_->runLoop();
+    }
+  }
+  //Main Loop
+  Loop * loop(){ return this->loop_; }
+  //ParaManger;
   ParaMgrShardPtr& ParaMgr() { return this->_paraMgr; }
   //事件发布订阅管理器
   BlockerMgrShardPtr& BlcokerMgr() { return this->_blockerMgr; }
@@ -58,13 +70,13 @@ class Application {
   DriverMgrShardPtr& DriverMgr() { return this->_driverMgr; }
   //网络通信管理器
   NetWorkMgrShardPtr& NetWorkMgr() { return this->_netWorkMgr; }
-
  private:
   //内部资源
   ParaMgrShardPtr    _paraMgr;
   BlockerMgrShardPtr _blockerMgr;
   NetWorkMgrShardPtr _netWorkMgr;
   DriverMgrShardPtr  _driverMgr;
+  Loop *             loop_ = nullptr;
 
 };
 
