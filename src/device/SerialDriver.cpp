@@ -1,6 +1,6 @@
 #include "SerialDriver.h"
 SerialDirver::SerialDirver()
-    : _type(IODevice::SerialType),
+    : _type(SerialType),
       _port(new CSerialPort()),
       _listener(new SerialListener(_port, this)) {
   if ((_port != nullptr) && (_listener != nullptr)) {
@@ -30,7 +30,7 @@ SerialListener::SerialListener(CSerialPort* port, SerialDirver* driver)
     : _port(port),
       _driver(driver){
 
-};
+      };
 /***********************************************************/
 void SerialListener::onReadEvent(const char* portName,
                                  unsigned int readBufferLen) {

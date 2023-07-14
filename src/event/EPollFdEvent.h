@@ -3,13 +3,13 @@
 #include <sys/epoll.h>
 
 #include "FdEvent.h"
-#include "Handle.h"
+
 class EpollLoop;
 struct EpollFdSharedData;
 
 class EpollFdEvent : public FdEvent {
  public:
-  explicit EpollFdEvent(EpollLoop *wp_loop, const std::string &name);
+  explicit EpollFdEvent(EpollLoop *wp_loop,const std::string &name );
   virtual ~EpollFdEvent() override;
 
  public:
@@ -37,12 +37,10 @@ class EpollFdEvent : public FdEvent {
   int fd_ = -1;
   uint32_t events_ = 0;
   bool is_enabled_ = false;
-
+   
   std::string name_;
   CallbackFunc cb_;
   EpollFdSharedData *d_ = nullptr;
-
-  Handle *  channel_ = nullptr;
 
   int cb_level_ = 0;
 };

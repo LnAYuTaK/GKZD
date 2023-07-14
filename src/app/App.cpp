@@ -5,15 +5,15 @@
 #include "Database.h"
 #include "DriverManager.h"
 #include "ParaManager.h"
+
 /***********************************************************/
 //实例化模块
 Application::Application(/* args */)
-    : loop_(Loop::New())
-    ,_paraMgr(std::make_shared<ParaManager>())
+    : _paraMgr(std::make_shared<ParaManager>()),
       // _threadPool(std::make_shared<ThreadPool>(MAX_THREAD)),
-    ,_blockerMgr(std::make_shared<BlockerManager>())
-    ,_netWorkMgr(std::make_shared<NetWorkManager>())
-    ,_driverMgr(std::make_shared<DriverManager>())
+      _blockerMgr(std::make_shared<BlockerManager>()),
+      _netWorkMgr(std::make_shared<NetWorkManager>()),
+      _driverMgr(std::make_shared<DriverManager>())
 #ifdef DATABASE_TEST
       ,
       _dataBase(DB_FILE)
@@ -45,21 +45,6 @@ void HandleClient(const std::shared_ptr<Bytes>& msg) {
 #endif
 /***********************************************************/
 void Application::init(/* args */) {
-
-#ifdef FD_EVENT_TEST
-  auto fd  = loop()->creatFdEvent("STDIO");
-  fd->initialize(STDIN_FILENO,FdEvent::kReadEvent,Event::Mode::kPersist);
-  fd->setCallback([&](short events){
-      if(events & FdEvent::kReadEvent)
-      {
-        char buffer[256];
-        bzero(buffer,sizeof(buffer));
-        read(STDIN_FILENO,buffer,sizeof(buffer));
-        CLOG_INFO() << "Buffer Read: " << buffer;
-      }
-  });
-#endif 
-
 #ifdef IO_TEST
   IOControl::setValue(IOControl::Relay8, IOControl::GPIO_SET);
   IOControl::setValue(IOControl::Relay8, IOControl::GPIO_RESET);
@@ -91,7 +76,6 @@ void Application::init(/* args */) {
 }
 /***********************************************************/
 void Application::start() {
-
 #ifdef NETWORK_TEST
   auto NetConf = app()->ParaMgr()->netConf().obj();
   auto NetWorkMgr = app()->NetWorkMgr();
@@ -125,6 +109,15 @@ void Application::start() {
   BlockerMgr->Subscribe<Bytes>("TCPSever", 1, "HandleServer", HandleServer);
   BlockerMgr->Subscribe<Bytes>("TCPClient", 1, "HandleClient", HandleClient);
 #endif  // NETWORK_TEST
+
+ auto netConfs = app()->ParaMgr()->netConf().obj();
+
+ CLOG_INFO() << netConfs->mqttclientname();
+ netConfs->set_mqttclientname("123123123123123");
+
+ CLOG_INFO() << netConfs->mqttclientname();
+ app()->ParaMgr()->netConf().saveConf();
+
 
 //数据库创建写入测试
 #ifdef DATABASE_TEST

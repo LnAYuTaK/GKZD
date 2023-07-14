@@ -11,6 +11,7 @@ class Loop {
  public:
   static Loop *New();
   //! 获取引擎列表
+
   enum class Mode {
     kOnce,    //!< 仅执行一次
     kForever  //!< 一直执行
@@ -18,8 +19,8 @@ class Loop {
   //! 执行事件循环
   virtual void runLoop(Mode mode = Mode::kForever) = 0;
   //! 退出事件循环
-  virtual void exitLoop(const std::chrono::milliseconds &wait_time =
-                            std::chrono::milliseconds::zero()) = 0;
+  // virtual void exitLoop(const std::chrono::milliseconds &wait_time =
+  //                           std::chrono::milliseconds::zero()) = 0;
 
   //! 是否与Loop在同一个线程内
   virtual bool isInLoopThread() = 0;

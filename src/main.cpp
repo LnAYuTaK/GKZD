@@ -2,6 +2,8 @@
 int main(int argc, char *argv[]) {
   app()->init();
   app()->start();
-  app()->exec();
+  for (;;) {
+    THREAD_SLEEP_MCROS(1000);
+  }
   return 0;
 }

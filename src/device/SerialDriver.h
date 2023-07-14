@@ -21,17 +21,16 @@ class SerialDirver : public IODevice {
  public:
   SerialDirver();
   ~SerialDirver() override;
-
+  virtual void onReadEvent(const char *portName,
+                           unsigned int readBufferLen) = 0;
   virtual void init(const char *portName, int baudRate = BaudRate9600,
                     Parity parity = ParityNone, DataBits dataBits = DataBits8,
                     StopBits stopbits = StopOne,
                     FlowControl flowControl = FlowNone,
-                    unsigned int readBufferSize = 4096);
+                    unsigned int readBufferSize = 4096) final;
 
   DriverType type() const override { return this->_type; }
 
-  virtual void onReadEvent(const char *portName,
-                           unsigned int readBufferLen) = 0;
   //读取串口数据
   int readData(void *data, int size) { return _port->readData(data, size); }
   //写入串口数据
@@ -39,9 +38,9 @@ class SerialDirver : public IODevice {
     return _port->writeData(data, size);
   }
   //打开串口
-  virtual bool open() override{ return _port->open(); }
+  bool open() { return _port->open(); }
   //关闭串口
-  virtual void close()override{ _port->close(); }
+  void close() { _port->close(); }
 
  private:
   CSerialPort *_port;

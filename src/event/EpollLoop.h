@@ -2,14 +2,15 @@
 
 #include <unordered_map>
 
-#include "Handle.h"
+
 #include "FdEvent.h"
-#include "Loop.h"
+
 #ifndef DEFAULT_MAX_LOOP_ENTRIES
 #define DEFAULT_MAX_LOOP_ENTRIES (256)
 #endif
 
 struct EpollFdSharedData;
+
 class EpollLoop : public Loop {
  public:
   explicit EpollLoop();
@@ -22,10 +23,8 @@ class EpollLoop : public Loop {
   virtual bool isRunning() const override;
 
   virtual void runLoop(Mode mode) override;
-  // Create Fd Event
+//Create Fd Event 
   virtual FdEvent *creatFdEvent(const std::string &fdName) override;
-
-  virtual void exitLoop(const std::chrono::milliseconds &wait_time) override;
 
  public:
   inline int epollFd() const { return epollFd_; }
@@ -35,9 +34,11 @@ class EpollLoop : public Loop {
   EpollFdSharedData *queryFdSharedData(int fd) const;
 
  protected:
+  virtual void stopLoop() { keepRunning_ = false; }
+
  private:
-  int maxLoopEntries_ = DEFAULT_MAX_LOOP_ENTRIES;
-  int epollFd_ = -1;
+  int  maxLoopEntries_ = DEFAULT_MAX_LOOP_ENTRIES;
+  int  epollFd_ = -1;
   bool keepRunning_ = true;
 
   std::unordered_map<int, EpollFdSharedData *> fdDataMap_;
