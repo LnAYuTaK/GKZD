@@ -45,6 +45,7 @@ class Utils {
                           google::protobuf::Message& message) {
     return JsonStringToMessage(json, &message).ok();
   }
+  
   //
   static size_t convertHex(char buf[], uintptr_t value);
 
@@ -71,6 +72,21 @@ class Utils {
     return f;
   }
 
+
+  //Get Function Run Time
+  template<typename F>
+  double calculateExecutionTime(F func)
+  {
+      // 获取当前时间点
+      auto start = std::chrono::high_resolution_clock::now();
+      // 执行函数
+      func();
+      // 获取当前时间点
+      auto end = std::chrono::high_resolution_clock::now();
+      // 计算执行时间（以毫秒为单位）
+      auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+      return duration;
+  }
  private:
   Utils(/* args */) {}
   ~Utils() {}
